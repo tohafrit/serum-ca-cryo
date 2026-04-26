@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "serum-ca-cryo"
+version = "0.1.0"
+description = "Computational model for post-thaw calcium deficit in cryostored serum QC standards"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "matplotlib>=3.8",
+    "pandas>=2.1",
+    "jupyter>=1.0",
+    "ipykernel>=6.0",
+    "SALib>=1.5",         # Sobol sensitivity indices (Module 6)
+]
+
+[project.optional-dependencies]
+phreeqc = [
+    "phreeqpy>=0.1",      # Python bindings for PHREEQC; install only if phreeqc binary is present
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=4.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
