@@ -6,6 +6,7 @@ __pycache__/
 .Python
 *.egg
 *.egg-info/
+serum_ca_cryo.egg-info/
 dist/
 build/
 eggs/
@@ -47,10 +48,9 @@ coverage.xml
 .AppleDouble
 .LSOverride
 
-# Generated outputs — keep figures and data in git but not large binaries
-figures/*.png
+# Generated outputs committed to repo for GitHub visibility
+# (regenerated from scratch with: make figures)
 figures/*.pdf
-data/*.csv
 data/*.json
 
 # PHREEQC outputs

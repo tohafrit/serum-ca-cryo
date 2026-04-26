@@ -169,3 +169,48 @@ def test_vortex_thaw_reduces_deficit():
     d_q = compute_vial_deficit_scenario(thaw_h=10e-6, **kw)
     d_v = compute_vial_deficit_scenario(thaw_h=2e-6,  **kw)
     assert d_v < d_q
+
+
+# ── New scenarios: combined_plus and seeker_workaround ───────────────────────
+
+def test_combined_plus_beats_combined_at_12mo(stats):
+    """Double-pulse vortex + 90-min window must outperform single vortex + 60 min."""
+    f_combined      = stats["+combined"]["frac_above_4pct_12mo"]
+    f_combined_plus = stats["+combined_plus"]["frac_above_4pct_12mo"]
+    assert f_combined_plus < f_combined, (
+        f"combined_plus {f_combined_plus:.3f} should beat combined {f_combined:.3f} at 12mo"
+    )
+
+def test_combined_plus_eliminates_deficit_at_12mo(stats):
+    """
+    Combined+ (double vortex + degas + CRF) reduces 12-month fraction >4% to <5%.
+    Headline result for extended protocol proposal.
+    """
+    f = stats["+combined_plus"]["frac_above_4pct_12mo"]
+    assert f < 0.05, (
+        f"Combined+: {f:.1%} vials >4% at 12 months; expected <5%"
+    )
+
+def test_seeker_workaround_near_zero_at_both_timepoints(stats):
+    """
+    48-h cold equilibration should bring fraction >4% to <2% at both 6 and 12 months.
+    This validates the Seeker's reported workaround against the model.
+    """
+    f6  = stats["+seeker_workaround"]["frac_above_4pct_6mo"]
+    f12 = stats["+seeker_workaround"]["frac_above_4pct_12mo"]
+    assert f6  < 0.02, f"Seeker workaround: {f6:.1%} >4% at 6mo; expected <2%"
+    assert f12 < 0.02, f"Seeker workaround: {f12:.1%} >4% at 12mo; expected <2%"
+
+def test_longer_thaw_reduces_deficit():
+    """Longer thaw window (90 min vs 60 min) → more dissolution → lower deficit."""
+    kw = dict(
+        storage_months=12, local_k_factor=1.0, nucleation_delay_days=0.0,
+        particle_size_nm=50.0, storage_T_C=-20.0, albumin_g_dL=5.5,
+        cryo_purity=1.0, glass_density=0.5, fill_volume_mL=7.5,
+        ph_storage=8.0, thaw_h=2e-6,
+    )
+    d_60  = compute_vial_deficit_scenario(thaw_min=60.0,  **kw)
+    d_90  = compute_vial_deficit_scenario(thaw_min=90.0,  **kw)
+    d_48h = compute_vial_deficit_scenario(thaw_min=2880.0, d_factor=0.60, **kw)
+    assert d_90  < d_60,  "90-min thaw should give lower deficit than 60-min"
+    assert d_48h < d_90,  "48-h cold soak should give lower deficit than 90-min"

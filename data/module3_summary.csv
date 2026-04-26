@@ -1,0 +1,9 @@
+phase,Ksp_note,SI_k1_pH74_T25C,SI_k1_pH74_T25C_unc,SI_k558_pH781_T-20C,SI_k558_pH781_T-20C_unc,SI_k558_pH881_T-20C_90CO2loss,SI_k558_pH881_T-20C_90CO2loss_unc
+HAp,McDowell 1977; ΔH: Vega 1996 (±20 kJ/mol uncertainty),+5.10,±0.10,+7.54,±0.92,+11.93,±0.92
+OCP,Moreno 1960; ΔH estimated from HAp analogy (large uncertainty),-4.73,±0.10,+0.77,±1.23,+5.91,±1.23
+brushite,Marshall & Nancollas 1969,-0.46,±0.10,+0.62,±0.46,+0.87,±0.46
+monetite,McDowell 1971; ΔH estimated,-0.15,±0.10,+0.93,±0.55,+1.18,±0.55
+ACP_loose,"Boskey & Posner 1973 (fresh ACP, Ca/P=1.50)",-4.26,±0.10,-2.10,±0.77,+0.22,±0.77
+ACP_tight,"Christoffersen 1990 (aged ACP, higher crystallinity)",-1.46,±0.10,+0.70,±0.77,+3.02,±0.77
+calcite,Plummer & Busenberg 1982; ΔH CRC 97th ed.,-0.35,±0.10,+0.96,±0.36,+1.83,±0.36
+vaterite,Plummer & Busenberg 1982,-0.92,±0.10,+0.33,±0.46,+1.20,±0.46

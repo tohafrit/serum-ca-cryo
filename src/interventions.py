@@ -27,7 +27,7 @@ from pathlib import Path
 from src.ripening_kinetics import (
     rate_constants as _rate_constants,
     R0_NM, K_LSW, VM, GAMMA, C_SAT_BULK,
-    D_CA_22C, H_QUIESCENT, H_VORTEX, R_GAS,
+    D_CA_22C, D_CA_4C, H_QUIESCENT, H_VORTEX, R_GAS,
 )
 from src.vial_simulation import (
     N_BATCHES, N_PER_BATCH, GLASS_REF, FILL_REF,
@@ -65,6 +65,18 @@ STORAGE_MONTHS = [6, 12]
 #   quiescent  10e-6 m  (baseline)
 #   vortex_30s  2e-6 m  (literature: 1–5 µm in agitated dissolution)
 #   vortex_60s  1.5e-6 m (more aggressive mixing, diminishing returns)
+#   combined_plus 1.0e-6 m (double-pulse vortex: 30 s at 5 min + 60 s at 25 min)
+#
+# thaw_min:       Thaw measurement window (minutes; default 60)
+#   60    = standard 60-min room-temperature thaw
+#   90    = combined_plus: 60 min RT + 30-min cold soak before measurement
+#   2880  = Seeker's workaround: 48-h cold equilibration at 2-8°C
+#
+# d_factor:       Diffusivity multiplier at thaw temperature (default 1.0 = 22°C)
+#   1.0   = room temperature (22°C), D_CA_22C
+#   ~0.60 = cold equilibration (4°C), D_CA_4C / D_CA_22C (Stokes-Einstein)
+
+_D_FACTOR_4C = D_CA_4C / D_CA_22C   # ≈ 0.60 at 4°C vs 22°C
 
 SCENARIOS: dict[str, dict] = {
     "baseline":    {"ph": 8.0,  "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": H_QUIESCENT},
@@ -75,6 +87,19 @@ SCENARIOS: dict[str, dict] = {
     "+vortex_30s": {"ph": 8.0,  "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": H_VORTEX},
     "+vortex_60s": {"ph": 8.0,  "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": 1.5e-6},
     "+combined":   {"ph": 7.81, "k_sig": 0.05, "nuc_mult": 2.5, "thaw_h": H_VORTEX},
+    # Double-pulse vortex: 30 s at 5 min + 60 s at 25 min → h=1 µm; plus 30-min
+    # cold soak at 2-8°C before measurement (total measurement window 90 min).
+    "+combined_plus": {
+        "ph": 7.81, "k_sig": 0.05, "nuc_mult": 2.5,
+        "thaw_h": 1.0e-6, "thaw_min": 90.0,
+    },
+    # Seeker's existing workaround: 48-h cold equilibration at 2-8°C.
+    # No vortex; quiescent boundary layer; diffusivity scaled to 4°C.
+    # Reference scenario: "if you wait long enough, it all goes away."
+    "+seeker_workaround": {
+        "ph": 8.0, "k_sig": 0.15, "nuc_mult": 1.0,
+        "thaw_h": H_QUIESCENT, "thaw_min": 2880.0, "d_factor": _D_FACTOR_4C,
+    },
 }
 
 
@@ -99,9 +124,15 @@ def compute_vial_deficit_scenario(
     fill_volume_mL: float,
     ph_storage: float,
     thaw_h: float,
+    thaw_min: float = 60.0,
+    d_factor: float = 1.0,
     freezing_rate: float = 1.0,
 ) -> float:
-    """Compute per-vial Ca deficit with scenario-specific pH and thaw protocol."""
+    """Compute per-vial Ca deficit with scenario-specific pH and thaw protocol.
+
+    thaw_min: measurement window in minutes (60 = standard; 2880 = 48-h soak).
+    d_factor: diffusivity multiplier for thaw temperature (1.0 = 22°C, ~0.60 = 4°C).
+    """
     # Effective k
     fast_freeze_boost = 1.0 + 0.05 * np.log(max(freezing_rate, 0.1))
     k_eff = BASE_K * local_k_factor * cryo_purity * fast_freeze_boost
@@ -125,8 +156,9 @@ def compute_vial_deficit_scenario(
     # Precipitated fraction (albumin at cryo state)
     fp = _f_precip_scenario(albumin_g_dL, k_eff, ph_storage)
 
-    # Dissolution (Noyes-Whitney with scenario thaw_h)
+    # Dissolution (Noyes-Whitney with scenario thaw_h, thaw_min, d_factor)
     t_storage_h = t_storage_days * 24.0
+    D_thaw      = D_CA_22C * d_factor
     recovery    = 0.0
 
     for phase, frac, r0_override in [
@@ -144,8 +176,8 @@ def compute_vial_deficit_scenario(
         )
         c_prec   = 1.0 / (VM[phase] * 1000.0)
         h_eff    = max(r_m, thaw_h)
-        lambda_p = min(D_CA_22C * (3.0 / r_m) / h_eff * (c_s / c_prec), 1.0)
-        recovery += frac * (1.0 - np.exp(-lambda_p * THAW_TIME_MIN * 60.0))
+        lambda_p = min(D_thaw * (3.0 / r_m) / h_eff * (c_s / c_prec), 1.0)
+        recovery += frac * (1.0 - np.exp(-lambda_p * thaw_min * 60.0))
 
     return fp * (1.0 - np.clip(recovery, 0.0, 1.0))
 
@@ -202,6 +234,8 @@ def run_scenario(scenario_name: str, seed: int = 42) -> np.ndarray:
                 fill_volume_mL        = fill_volume[i],
                 ph_storage            = sc["ph"],
                 thaw_h                = sc["thaw_h"],
+                thaw_min              = sc.get("thaw_min", 60.0),
+                d_factor              = sc.get("d_factor", 1.0),
                 freezing_rate         = freezing_rate[bi],
             )
 
@@ -324,6 +358,44 @@ RISK_TABLE = [
         "REACH_PFAS":         "Compliant",
         "validation_needed":  ("Combination of individual validation studies above; "
                                "full design-of-experiments recommended"),
+    },
+    {
+        "intervention":       "D: Combined+ (A+B+double-pulse vortex+cold soak)",
+        "mechanism":          ("As Combined, but thaw protocol: 30-s vortex at 5 min, "
+                               "60-s vortex at 25 min, then 30-min equilibration at 2-8°C "
+                               "before measurement. Two vortex pulses reduce boundary layer "
+                               "to ~1 µm; cold soak adds dissolution time."),
+        "pH_effect":          "pH 7.81 (degassing controls pH)",
+        "IS_effect":          "None",
+        "osmolality_effect":  "Negligible",
+        "metal_balance":      "Unaffected for Ca/Mg; double-vortex shear risk slightly higher",
+        "shear_risk":         ("MODERATE-HIGH — two vortex pulses at 1500 rpm; "
+                               "MUST validate analyte stability panel"),
+        "complexity_1_5":     5,
+        "capex_estimate":     "High (as Combined; vortex already present)",
+        "ISO_13485":          "Compliant; requires updated SOP for thaw protocol",
+        "REACH_PFAS":         "Compliant",
+        "validation_needed":  ("All Combined validation studies; dose-response for "
+                               "double-pulse vortex; analyte stability at 2-8°C cold soak"),
+    },
+    {
+        "intervention":       "Seeker workaround: 48-h cold equilibration at 2-8°C",
+        "mechanism":          ("Extended equilibration at 2-8°C provides sufficient time "
+                               "for HAp microcrystals to dissolve toward solubility limit. "
+                               "At 4°C, D(Ca²⁺) ≈ 60% of 22°C value, but 48 h = 2880 min "
+                               "gives ~28× more dissolution time than standard 60-min thaw."),
+        "pH_effect":          "Unchanged (pH 8.0 baseline)",
+        "IS_effect":          "None",
+        "osmolality_effect":  "None",
+        "metal_balance":      "Unaffected",
+        "shear_risk":         "None (no vortex)",
+        "complexity_1_5":     1,
+        "capex_estimate":     "Zero (cold room already present); only SOP change",
+        "ISO_13485":          "Compliant; SOP change only; no new equipment",
+        "REACH_PFAS":         "Compliant",
+        "validation_needed":  ("Turnaround time 48 h is operationally impractical for "
+                               "routine use; 24 h may suffice; validate minimum soak time; "
+                               "confirm stable Ca at 48 h vs 6 h cold soak"),
     },
 ]
 

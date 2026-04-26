@@ -1,0 +1,9 @@
+scenario,label,phase,SI_davies,SI_wateq,delta_SI,abs_delta_SI,agrees
+physiological,"Physiological (k=1, pH 7.4)",Hydroxyapatite,10.159,10.132,0.028,0.028,YES
+physiological,"Physiological (k=1, pH 7.4)",Calcite,0.678,0.699,-0.021,0.021,YES
+physiological,"Physiological (k=1, pH 7.4)",Brushite,-0.166,-0.182,0.016,0.016,YES
+physiological,"Physiological (k=1, pH 7.4)",Monetite,0.144,0.128,0.016,0.016,YES
+cryoconcentrated,"Cryoconc. (k=5.58, pH 7.81)",Hydroxyapatite,15.75,15.491,0.259,0.259,YES
+cryoconcentrated,"Cryoconc. (k=5.58, pH 7.81)",Calcite,2.582,2.266,0.315,0.315,YES
+cryoconcentrated,"Cryoconc. (k=5.58, pH 7.81)",Brushite,0.63,0.763,-0.133,0.133,YES
+cryoconcentrated,"Cryoconc. (k=5.58, pH 7.81)",Monetite,0.94,1.073,-0.133,0.133,YES

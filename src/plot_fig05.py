@@ -36,8 +36,8 @@ def plot_fig05():
         deficit_pct = F_PRECIP * (1.0 - rec) * 100.0
         ax.plot(T_FAST, deficit_pct, color=COLORS[sm], lw=1.8,
                 label=f"{sm} month{'s' if sm>1 else ''}")
-    ax.axhline(4.0, color="gray", ls=":", lw=1.0)
-    ax.text(1, 4.2, "4% Seeker threshold", fontsize=7, color="gray")
+    ax.axhline(4.0, color="crimson", ls="--", lw=2.0)
+    ax.text(1, 4.3, "4% Seeker threshold", fontsize=7, color="crimson", fontweight="bold")
     ax.set_title("22°C quiescent (standard protocol)", fontsize=8.5)
     ax.set_xlabel("Time after thaw (min)", fontsize=8)
     ax.set_ylabel("Ca deficit (% of total)", fontsize=8)
@@ -59,7 +59,7 @@ def plot_fig05():
     ax.axvline(30.0, color="black", ls="--", lw=1.0)
     ax.text(31, ax.get_ylim()[1] * 0.05 if ax.get_ylim()[1] > 0 else 1,
             "vortex", fontsize=7)
-    ax.axhline(4.0, color="gray", ls=":", lw=1.0)
+    ax.axhline(4.0, color="crimson", ls="--", lw=2.0)
     ax.set_title("22°C + 30-s vortex at 30 min", fontsize=8.5)
     ax.set_xlabel("Time after thaw (min)", fontsize=8)
     ax.set_ylabel("Ca deficit (% of total)", fontsize=8)
@@ -75,7 +75,11 @@ def plot_fig05():
         deficit_pct = F_PRECIP * (1.0 - rec) * 100.0
         ax.plot(T_h, deficit_pct, color=COLORS[sm], lw=1.8,
                 label=f"{sm} month{'s' if sm>1 else ''}")
-    ax.axhline(4.0, color="gray", ls=":", lw=1.0)
+    ax.axhline(4.0, color="crimson", ls="--", lw=2.0)
+    ax.annotate("60-min snapshot in cold protocol:\nkinetics still in progress",
+                xy=(1.0, _deficit_label(12, 60.0, "cold_4C_48h")),
+                xytext=(12, 10), fontsize=6.5, color="#555555",
+                arrowprops=dict(arrowstyle="->", color="#555555", lw=0.8))
     ax.set_title("2–8°C quiescent (48-h equilibration)", fontsize=8.5)
     ax.set_xlabel("Time after thaw (h)", fontsize=8)
     ax.set_ylabel("Ca deficit (% of total)", fontsize=8)
@@ -94,7 +98,8 @@ def plot_fig05():
         rec = ca_recovery_curve(12, t_ext, protocol=prot)
         deficit_pct = F_PRECIP * (1.0 - rec) * 100.0
         ax.plot(t_ext, deficit_pct, color=col, lw=1.8, label=lbl)
-    ax.axhline(4.0, color="gray", ls=":", lw=1.0)
+    ax.axhline(4.0, color="crimson", ls="--", lw=2.0)
+    ax.text(1, 4.3, "4%", fontsize=7, color="crimson", fontweight="bold")
     ax.set_title("12-month sample: protocol comparison", fontsize=8.5)
     ax.set_xlabel("Time after thaw (min)", fontsize=8)
     ax.set_ylabel("Ca deficit (% of total)", fontsize=8)

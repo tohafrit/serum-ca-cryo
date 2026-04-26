@@ -1,0 +1,102 @@
+SOLUTION_MASTER_SPECIES
+H         H+         -1   1.008               H
+H(0)      H2         0    1.008
+O         H2O        0    16.00               O
+O(0)      O2         0    32.00
+Ca        Ca+2       0    40.08               Ca
+Mg        Mg+2       0    24.31               Mg
+Na        Na+        0    22.99               Na
+K         K+         0    39.10               K
+Cl        Cl-        0    35.45               Cl
+C(4)      HCO3-      1    12.011              C
+P         H2PO4-     0    30.974              P
+
+SOLUTION_SPECIES
+H+ = H+
+    log_k 0.0
+    gamma 9.0 0.0
+H2O = H2O
+    log_k 0.0
+H2O = OH- + H+
+    log_k -13.9998
+    gamma 3.5 0.0
+Ca+2 = Ca+2
+    log_k 0.0
+    gamma 5.0 0.165
+Ca+2 + HCO3- = CaHCO3+
+    log_k 1.106
+    gamma 4.0 0.0
+Ca+2 + CO3-2 = CaCO3
+    log_k 3.224
+Ca+2 + OH- = CaOH+
+    log_k 1.40
+    gamma 4.0 0.0
+Ca+2 + HPO4-2 = CaHPO4
+    log_k 2.74
+Ca+2 + H2PO4- = CaH2PO4+
+    log_k 1.40
+    gamma 4.0 0.0
+Ca+2 + PO4-3 = CaPO4-
+    log_k 6.46
+    gamma 4.0 0.0
+Mg+2 = Mg+2
+    log_k 0.0
+    gamma 5.5 0.20
+Mg+2 + HCO3- = MgHCO3+
+    log_k 1.07
+    gamma 4.0 0.0
+Mg+2 + CO3-2 = MgCO3
+    log_k 2.98
+Mg+2 + OH- = MgOH+
+    log_k 2.56
+    gamma 4.0 0.0
+Na+ = Na+
+    log_k 0.0
+    gamma 4.0 0.075
+K+ = K+
+    log_k 0.0
+    gamma 3.5 0.015
+Cl- = Cl-
+    log_k 0.0
+    gamma 3.5 0.015
+HCO3- = HCO3-
+    log_k 0.0
+    gamma 5.4 0.0
+HCO3- = CO3-2 + H+
+    log_k -10.3288
+    gamma 5.4 0.0
+HCO3- + H+ = CO2
+    log_k 6.3447
+CO2 = CO2
+    log_k 0.0
+H2PO4- = H2PO4-
+    log_k 0.0
+    gamma 4.0 0.0
+H2PO4- + H+ = H3PO4
+    log_k 2.148
+H2PO4- = HPO4-2 + H+
+    log_k -7.198
+    gamma 4.0 0.0
+HPO4-2 = PO4-3 + H+
+    log_k -12.375
+    gamma 4.0 0.0
+H2 = H2
+    log_k 0.0
+O2 = O2
+    log_k 0.0
+
+PHASES
+Hydroxyapatite
+    Ca5(PO4)3OH = 5Ca+2 + 3PO4-3 + OH-
+    log_k -58.33
+Calcite
+    CaCO3 = Ca+2 + CO3-2
+    log_k -8.48
+Brushite
+    CaHPO4:2H2O = Ca+2 + HPO4-2 + 2H2O
+    log_k -6.59
+Monetite
+    CaHPO4 = Ca+2 + HPO4-2
+    log_k -6.90
+
+END

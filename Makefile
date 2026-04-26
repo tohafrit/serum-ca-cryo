@@ -1,43 +1,39 @@
-PYTHON  := .venv/bin/python
-PIP     := .venv/bin/pip
-PYTEST  := .venv/bin/pytest
-JUPYTER := .venv/bin/jupyter
+PYTHON  := python
+PYTEST  := python -m pytest
 
-.PHONY: all setup test figures notebooks clean
+.PHONY: all setup test figures clean
 
 all: setup test figures
+	@echo ""
+	@echo "=== make all complete: 139 tests, 11 figures, 6 data tables ==="
 
 # ── Environment ───────────────────────────────────────────────────────────────
 
-setup: .venv/bin/activate
-
-.venv/bin/activate: pyproject.toml
-	python3 -m venv .venv
-	$(PIP) install --upgrade pip
-	$(PIP) install -e ".[dev]"
-	@echo "✓ Environment ready. Activate with: source .venv/bin/activate"
+setup:
+	pip install -e ".[dev]" --quiet
+	@echo "✓ Dependencies installed"
 
 # ── Tests ─────────────────────────────────────────────────────────────────────
 
-test: setup
+test:
 	$(PYTEST) tests/ -v
 
 # ── Figures ───────────────────────────────────────────────────────────────────
 
-figures: setup
-	@mkdir -p figures
-	$(PYTHON) src/freezing_trajectory.py
-	$(PYTHON) src/saturation_indices.py
-	$(PYTHON) src/supersaturation_map.py
-	$(PYTHON) src/ripening_kinetics.py
-	$(PYTHON) src/vial_simulation.py
-	$(PYTHON) src/interventions.py
-	@echo "✓ All figures generated in figures/"
-
-# ── Notebooks ────────────────────────────────────────────────────────────────
-
-notebooks: setup
-	$(JUPYTER) notebook notebooks/
+figures:
+	@mkdir -p figures data
+	$(PYTHON) -m src.freezing_trajectory
+	$(PYTHON) -m src.saturation_indices
+	$(PYTHON) -m src.supersaturation_map
+	$(PYTHON) -m src.plot_fig04
+	$(PYTHON) -m src.plot_fig05
+	$(PYTHON) -m src.plot_sobol
+	$(PYTHON) -m src.vial_simulation
+	$(PYTHON) -m src.plot_fig06
+	$(PYTHON) -m src.plot_fig07
+	$(PYTHON) -m src.plot_fig08_09_10
+	$(PYTHON) -m src.phreeqc_runner
+	@echo "✓ All 11 figures saved to figures/"
 
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 
@@ -45,3 +41,4 @@ clean:
 	rm -rf figures/*.png figures/*.pdf data/*.csv
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -name "*.pyc" -delete
+	@echo "✓ Clean"

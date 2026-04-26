@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+type: software
+title: "serum-ca-cryo: Computational model for post-thaw calcium deficit in cryostored serum QC standards"
+version: 0.1.0
+date-released: "2025-04-26"
+license: MIT
+url: "https://github.com/tohafrit/serum-ca-cryo"
+repository-code: "https://github.com/tohafrit/serum-ca-cryo"
+abstract: >
+  Open-source computational model explaining the mechanism of post-thaw calcium deficit
+  in human-serum quality-control standards stored at -20°C for ≥6 months.
+  The model quantifies cryoconcentration-driven supersaturation, ACP→OCP→HAp Ostwald
+  ripening kinetics at -20°C, stochastic nucleation variability across vials, and
+  three intervention protocols (degassing, controlled-rate freezing, vortex thaw).
+  All figures and data tables are fully reproducible via `make all`.
+authors:
+  - family-names: Pakhunov
+    given-names: Anton
+    email: tohafrit@gmail.com
+keywords:
+  - serum quality control
+  - calcium precipitation
+  - cryopreservation
+  - hydroxyapatite
+  - Ostwald ripening
+  - calcium phosphate
+  - saturation index
+  - Monte Carlo simulation
+references:
+  - type: article
+    authors:
+      - family-names: Boskey
+        given-names: A.L.
+      - family-names: Posner
+        given-names: A.S.
+    title: "Conversion of amorphous calcium phosphate to microcrystalline hydroxyapatite"
+    journal: "Journal of Physical Chemistry"
+    volume: 77
+    year: 1973
+  - type: article
+    authors:
+      - family-names: Fogh-Andersen
+        given-names: N.
+    title: "Albumin-bound and ionized calcium in human blood"
+    journal: "Clinical Chemistry"
+    volume: 41
+    year: 1995
