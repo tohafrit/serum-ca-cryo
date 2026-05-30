@@ -15,17 +15,19 @@ FIGURES_DIR = Path(__file__).parent.parent / "figures"
 
 # Display names and colours
 DISPLAY = {
-    "baseline":           ("Baseline (pH 8.0)",           "#555555"),
-    "+degas_10":          ("+Degas (10% CO₂)",            "#2196F3"),
-    "+crf_2C":            ("+CRF 2°C/min",                "#4CAF50"),
-    "+vortex_30s":        ("+Vortex 30 s",                "#FF9800"),
-    "+combined":          ("+All three (combined)",       "#d62728"),
-    "+combined_plus":     ("+Combined+ (double vortex)",  "#9C27B0"),
-    "+seeker_workaround": ("Seeker 48-h cold soak*",      "#795548"),
+    "baseline":          ("Baseline (sealed, pH 7.81)",  "#555555"),
+    "loose_seal":        ("Loose seal (pH 8.0, risk)",   "#b71c1c"),
+    "+crf_2C":           ("+CRF 2°C/min",                "#4CAF50"),
+    "+vortex_30s":       ("+Vortex 30 s",                "#FF9800"),
+    "+vortex_60s":       ("+Vortex 60 s",                "#FB8C00"),
+    "+combined":         ("+All three (combined)",       "#d62728"),
+    "+combined_plus":    ("+Combined+ (double vortex)",  "#9C27B0"),
+    "+extended_mixing":  ("Extended mixing (48 h)*",     "#795548"),
+    "+deep_freeze":      ("Deep-freeze ≤ −80°C (prevent)", "#1565C0"),
 }
 # 5 standard-thaw scenarios for fig08 histograms (comparable 60-min thaw)
-SHOW_SCENARIOS    = ["baseline", "+degas_10", "+crf_2C", "+vortex_30s", "+combined"]
-# Extended set for fig09 bar chart (includes the two new scenarios)
+SHOW_SCENARIOS    = ["baseline", "loose_seal", "+crf_2C", "+vortex_30s", "+combined"]
+# Extended set for fig09 bar chart (includes all named scenarios)
 SHOW_SCENARIOS_09 = list(DISPLAY.keys())
 
 
@@ -65,8 +67,8 @@ def plot_fig09(rows: list[dict]):
     rows5 = [r for r in rows if r["scenario"] in SHOW_SCENARIOS_09]
     names  = [DISPLAY[r["scenario"]][0] for r in rows5]
     cols   = [DISPLAY[r["scenario"]][1] for r in rows5]
-    f6     = [r["frac_above_4pct_6mo"]  * 100 for r in rows5]
-    f12    = [r["frac_above_4pct_12mo"] * 100 for r in rows5]
+    f6     = [r["frac_with_deficit_6mo"]  * 100 for r in rows5]
+    f12    = [r["frac_with_deficit_12mo"] * 100 for r in rows5]
 
     x   = np.arange(len(names))
     w   = 0.30
@@ -124,16 +126,15 @@ def plot_fig09(rows: list[dict]):
 # ── fig10: Pareto plot (efficacy vs implementation complexity) ────────────────
 
 COMPLEXITY = {   # 1=very easy, 5=very hard (capex + operational)
-    "baseline":           (1, "Baseline"),
-    "+degas_50":          (2, "+Degas 50%"),
-    "+degas_10":          (2, "+Degas 10%"),
-    "+crf_1C":            (4, "+CRF 1°C/min"),
-    "+crf_2C":            (5, "+CRF 2°C/min"),
-    "+vortex_30s":        (2, "+Vortex 30s"),
-    "+vortex_60s":        (2, "+Vortex 60s"),
-    "+combined":          (5, "+Combined"),
-    "+combined_plus":     (5, "+Combined+"),
-    "+seeker_workaround": (1, "Seeker 48-h*"),
+    "baseline":          (1, "Baseline"),
+    "loose_seal":        (1, "Loose seal"),
+    "+crf_2C":           (5, "+CRF 2°C/min"),
+    "+vortex_30s":       (2, "+Vortex 30s"),
+    "+vortex_60s":       (2, "+Vortex 60s"),
+    "+combined":         (5, "+Combined"),
+    "+combined_plus":    (5, "+Combined+"),
+    "+extended_mixing":  (1, "Extended mixing*"),
+    "+deep_freeze":      (3, "Deep-freeze −80°C"),
 }
 
 def plot_fig10(rows: list[dict]):
@@ -142,7 +143,7 @@ def plot_fig10(rows: list[dict]):
     for row in rows:
         name = row["scenario"]
         comp, label = COMPLEXITY[name]
-        f6   = row["frac_above_4pct_6mo"]  * 100
+        f6   = row["frac_with_deficit_6mo"]  * 100
         col  = DISPLAY.get(name, (None, "#888888"))[1]
         size = 120 if name in DISPLAY else 60
 

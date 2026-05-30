@@ -25,15 +25,17 @@ figures:
 	$(PYTHON) -m src.freezing_trajectory
 	$(PYTHON) -m src.saturation_indices
 	$(PYTHON) -m src.supersaturation_map
+	$(PYTHON) -m src.ripening_kinetics
 	$(PYTHON) -m src.plot_fig04
 	$(PYTHON) -m src.plot_fig05
-	$(PYTHON) -m src.plot_sobol
 	$(PYTHON) -m src.vial_simulation
+	$(PYTHON) -m src.plot_sobol
 	$(PYTHON) -m src.plot_fig06
 	$(PYTHON) -m src.plot_fig07
+	$(PYTHON) -m src.interventions
 	$(PYTHON) -m src.plot_fig08_09_10
 	$(PYTHON) -m src.phreeqc_runner
-	@echo "✓ All 11 figures saved to figures/"
+	@echo "✓ All figures + data tables regenerated (figures/, data/)"
 
 # ── Cleanup ───────────────────────────────────────────────────────────────────
 

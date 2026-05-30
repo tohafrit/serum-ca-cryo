@@ -8,12 +8,17 @@ license: MIT
 url: "https://github.com/tohafrit/serum-ca-cryo"
 repository-code: "https://github.com/tohafrit/serum-ca-cryo"
 abstract: >
-  Open-source computational model explaining the mechanism of post-thaw calcium deficit
-  in human-serum quality-control standards stored at -20°C for ≥6 months.
-  The model quantifies cryoconcentration-driven supersaturation, ACP→OCP→HAp Ostwald
-  ripening kinetics at -20°C, stochastic nucleation variability across vials, and
-  three intervention protocols (degassing, controlled-rate freezing, vortex thaw).
-  All figures and data tables are fully reproducible via `make all`.
+  Open-source, reproducible computational model of the reversible post-thaw calcium
+  deficit in cryostored human-serum quality-control standards. Cryoconcentration on
+  freezing drives strong calcium-phosphate supersaturation (SI(HAp) ≈ +7.5,
+  cross-checked against the WATEQ activity model); amorphous calcium phosphate
+  nucleates on the glass surface and — because the viscous cryoprotected pool
+  suppresses crystalline ripening — stays amorphous. A quiescent freshly-thawed draw
+  under-samples this surface-bound deposit, and mixing reverses it. Stochastic
+  nucleation accounts for the vial-to-vial and batch-to-batch variability. Two
+  process-only fixes: prevent it by deep-frozen (vitrified, ≤ −80 °C) storage that
+  arrests nucleation, or neutralize it with a defined mixing/re-suspension step at
+  thaw. All figures and data tables are reproducible via `make all`.
 authors:
   - family-names: Pakhunov
     given-names: Anton

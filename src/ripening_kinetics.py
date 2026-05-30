@@ -60,11 +60,72 @@ EA_ACP_OCP = 65_000.0  # J/mol (Christoffersen 1989)
 EA_ACP_HAP = 65_000.0  # J/mol (same mechanism, assume equal)
 EA_OCP_HAP = 80_000.0  # J/mol (Dorozhkin 2010; solid-state slower)
 
-# Glycerol-15% viscosity at −20°C ≈ 10× water at 0°C (Sheely 1932).
-# Solution-mediated ripening is diffusion-limited → apply Stokes-Einstein:
-#   k_diff ∝ D ∝ T/η  →  scale = (T_cryo/η_cryo) / (T_ref/η_ref)
-# η_water(25°C) = 0.89 mPa·s; η_glycerol15%(−20°C) ≈ 9 mPa·s
-VISC_SCALE = (253.15 / 9.0) / (298.15 / 0.89)   # ≈ 0.094
+# Viscosity of the UNFROZEN POOL, not the dilute serum.  This correction is
+# central and was wrong in earlier versions.
+#
+# At k≈5.58 the 15% w/w glycerol of the serum is cryo-concentrated to ~84% w/w
+# glycerol in the unfrozen pool.  Its viscosity at −20°C is ~4100 mPa·s
+# (Cheng 2008 glycerol-water correlation), NOT the ~9 mPa·s of 15% glycerol
+# (the dilute serum value the code previously used — a 457× error).
+#
+# Solution-mediated ripening/coarsening is diffusion-limited, so by
+# Stokes-Einstein (k ∝ D ∝ T/η):
+#   VISC_SCALE = (T_cryo/η_pool) / (T_ref/η_ref)
+ETA_REF_WATER_25C = 0.89     # mPa·s
+ETA_POOL_M20C     = 4111.0   # mPa·s, ~84% glycerol at −20°C (Cheng 2008)
+VISC_SCALE = (253.15 / ETA_POOL_M20C) / (298.15 / ETA_REF_WATER_25C)  # ≈ 1.8e-4
+#
+# CONSEQUENCE (an honest, literature-consistent finding, not a defect):
+# with the correct pool viscosity the ACP→OCP→HAp transformation is ~457× slower
+# than the old value implied.  Reaching even 7% HAp would take ~200+ years, so
+# over months at −20°C the precipitate stays essentially 100% AMORPHOUS (ACP).
+# This AGREES with Combes & Rey (2010): "ACP is kinetically stable for months at
+# <0°C."  The post-thaw deficit therefore is NOT caused by slow-dissolving HAp
+# crystals; it is caused by amorphous calcium phosphate that precipitates on the
+# glass surface during freeze-concentration and is incompletely re-sampled /
+# re-dispersed in a quiescent fresh thaw — reversible with mixing.  See
+# ACP_AGGREGATE_NM below and the docs for the full mechanism.
+#
+# NOTE: this slowdown is specific to a high-glycerol cryoprotectant.  With a
+# less viscous cryoprotectant (or none → concentrated salt pool) ripening would
+# proceed faster; the cryoprotectant identity is therefore a key unknown.
+
+# ── Pool viscosity vs temperature → the PREVENTION lever ──────────────────────
+# The same viscosity physics that rules out HAp ripening also points to the fix:
+# go colder and you arrest precipitation entirely. Nucleation/growth are
+# diffusion-limited (Stokes-Einstein, rate ∝ T/η). Below the glass transition of
+# the freeze-concentrate (Tg' ≈ −50 °C for serum), the pool vitrifies and
+# nucleation is effectively frozen out → no precipitate → no deficit. Deep-frozen
+# (≤ −60…−80 °C) storage is therefore a root-cause PREVENTION, not a remediation.
+POOL_GLYCEROL_FRAC = 0.84   # 15% w/w glycerol, cryo-concentrated ~5.6×
+
+def _eta_water_mPas(T_C: float) -> float:
+    return 1.790 * np.exp((-1230.0 - T_C) * T_C / (36100.0 + 360.0 * T_C))
+
+def _eta_glycerol_mPas(T_C: float) -> float:
+    return 12100.0 * np.exp((-1233.0 + T_C) * T_C / (9900.0 + 70.0 * T_C))
+
+def eta_pool_mPas(T_C: float, Cm: float = POOL_GLYCEROL_FRAC) -> float:
+    """Viscosity (mPa·s) of the cryo-concentrated glycerol pool (Cheng 2008)."""
+    a = 0.705 - 0.0017 * T_C
+    b = (4.9 + 0.036 * T_C) * a ** 2.5
+    alpha = 1.0 - Cm + (a * b * Cm * (1.0 - Cm)) / (a * Cm + b * (1.0 - Cm))
+    return _eta_water_mPas(T_C) ** alpha * _eta_glycerol_mPas(T_C) ** (1.0 - alpha)
+
+def nucleation_temp_factor(T_C: float, T_ref_C: float = -20.0) -> float:
+    """
+    Multiplier on nucleation induction time relative to the −20 °C reference.
+    Induction ∝ η/T (Stokes-Einstein). Colder storage → much higher pool
+    viscosity → much longer induction → far fewer vials nucleate. Below Tg'
+    (~−50 °C) the pool is glassy and nucleation is arrested; the factor is
+    clamped to avoid overflow but the qualitative conclusion (arrest) is robust.
+    The −80 °C value is an extrapolation of Cheng beyond its fitted range — the
+    direction and order of magnitude are sound, the exact number is indicative.
+    """
+    T_K  = T_C + 273.15
+    Tr_K = T_ref_C + 273.15
+    f = (eta_pool_mPas(T_C) / T_K) / (eta_pool_mPas(T_ref_C) / Tr_K)
+    return float(min(max(f, 1e-3), 1e6))
 
 # pH effect on ACP→OCP: 10× per pH unit above 7.0 (sigmoidal, approximated)
 def _ph_factor(pH: float) -> float:
@@ -166,6 +227,30 @@ C_SAT_BULK = {     # approximate; ACP ~ 0.4 mM, OCP ~ 0.05 mM, HAp ~ 1e-4 mM
     "HAp":  1.0e-7,    # 0.0001 mM (McDowell 1977)
 }
 
+# ── Precipitated fraction of total calcium ───────────────────────────────────
+# The post-thaw deficit (as % of total Ca) = F_PRECIP × (1 − recovery), where
+# F_PRECIP is the fraction of total serum Ca that has precipitated as solid
+# calcium phosphate at peak cryoconcentration.
+#
+# F_PRECIP is bounded by MASS BALANCE, not by albumin binding.  (An earlier
+# version wrongly equated it with the albumin-bound fraction 1−α_Ca; bound Ca
+# is dissolved and measured as total Ca, so that derivation was a category
+# error — even though the resulting value happened to be defensible.)
+#   pool at k≈5.58:   Ca_pool ≈ 15.3 mM,  Pi_pool ≈ 10.0 mM
+#   phosphate cap:    (Ca:P≈1.5) × Pi_pool / Ca_pool ≈ 0.98
+#   supersat excess:  (Ca_pool − C_sat_ACP) / Ca_pool ≈ 0.97
+# Thermodynamics + stoichiometry therefore permit up to ~0.97 of the calcium to
+# precipitate (SI(HAp) ≈ +7.5 is extreme).  The ACTUAL fraction is lower and
+# genuinely UNCERTAIN, because albumin buffers free Ca²⁺ and re-supplies it only
+# as fast as the binding equilibrium allows.  Plausible band is wide:
+#   ~0.07  (free-Ca-only, no albumin re-supply)  …  ~0.97  (full mass balance).
+# We adopt a representative value and treat the deficit MAGNITUDE as uncertain
+# to this factor.  The predictions that are ROBUST to F_PRECIP are the onset
+# timescale and the RELATIVE effect of mixing.  F_PRECIP is exactly the quantity
+# the proposed simultaneous ISE + ICP-MS experiment measures directly.
+F_PRECIP            = 0.90    # representative value (mass-balance band 0.07–0.97)
+F_PRECIP_BAND       = (0.50, 0.97)   # reported uncertainty band for the deficit
+
 # Diffusion coefficient Ca²⁺ at 22°C in dilute water: 7.9e-10 m²/s
 # In post-thaw solution (diluted glycerol, ~1% residual at 22°C):
 #   D_eff ≈ 7.0e-10 m²/s (slight correction; Stokes-Einstein viscosity)
@@ -193,6 +278,20 @@ K_LSW = {
     "HAp": _K_LSW_ACP_25C * VISC_SCALE * 0.1,   # HAp grows slowest
 }
 R0_NM = {"ACP": 30.0, "OCP": 50.0, "HAp": 80.0}   # initial mean radius (nm)
+
+# Effective size of the wall-bound ACP deposit that controls re-dispersion at
+# thaw.  Freeze-concentration drives aggregation (not Ostwald coarsening, which
+# is viscosity-suppressed) into micron-scale aggregates / surface films on the
+# glass.  The redissolution/redispersion rate (Noyes-Whitney) is set by this
+# effective size and the diffusion boundary layer, so it is fast under mixing
+# (small boundary layer) and slow in a quiescent fresh thaw — which is exactly
+# the reported reversibility-with-mixing.
+#
+# This size is GENUINELY UNCERTAIN and is the dominant control on the deficit
+# MAGNITUDE; it is not fitted to any Seeker number.  A representative few-µm
+# value is used; the deficit is reported as a band, and the proposed DLS/NTA and
+# microscopy experiments measure this size directly.
+ACP_AGGREGATE_NM = 5000.0   # ~5 µm representative wall-aggregate (band ~1–10 µm)
 
 
 def mean_radius_nm(phase: str, t_storage_h: float) -> float:
@@ -258,40 +357,41 @@ def ca_recovery_curve(
     else:
         raise ValueError(f"Unknown protocol: {protocol}")
 
-    # For each phase: compute how much Ca re-dissolves by each thaw time.
-    # Fraction dissolved from phase p: F_p(t) = 1 - exp(-lambda_p * t)
-    # where lambda_p = D_eff / (r_p + h) / (V_particle) × A_s
-    # Simplified: for nanoparticle (r < h), lambda ≈ D_eff / h / r × C_s / ΔC
-    # Full Noyes-Whitney:  dF_p/dt = (D/h) * (C_s - C_solution) / C_precipitate
-    # We integrate numerically for each phase using its dissolution rate.
+    # Re-dispersion / redissolution of the wall-bound precipitate at thaw.
+    #   F(t) = 1 − exp(−lambda · t),   lambda ≈ (D_eff/h_eff)·(3/r_agg)·(c_s/c_prec)
+    #
+    # MECHANISM (post-viscosity-correction): the precipitate is essentially all
+    # AMORPHOUS calcium phosphate (ripening to HAp is suppressed at −20°C in the
+    # viscous pool — see VISC_SCALE note). It sits on the glass as ~µm-scale
+    # aggregates. Their re-dispersion rate is mass-transfer limited:
+    #   - quiescent fresh thaw → thick boundary layer h ≈ 10 µm → slow → deficit;
+    #   - mixing / vortex      → thin boundary layer h ≈ 1–2 µm → fast → recovers;
+    #   - long standing        → completes by diffusion alone.
+    # This reproduces the Seeker's "reversible with additional mixing" directly.
+    #
+    # We model the precipitate with the effective aggregate size ACP_AGGREGATE_NM
+    # (uncertain; the dominant control on deficit magnitude — see its note). The
+    # sink-limited form (drop the −C_solution back term) is appropriate because
+    # the re-diluted vial is undersaturated w.r.t. amorphous CaP, so it fully
+    # redisperses given time/mixing — i.e. recovery → 1, matching reversibility.
 
     t_sec = thaw_times_min * 60.0   # convert to seconds
     recovery = np.zeros_like(thaw_times_min, dtype=float)
+    f_solid  = f_ACP + f_OCP + f_HAp   # total precipitated fraction (≈ all ACP)
+    if f_solid < 1e-6:
+        return recovery
 
-    for phase, f_phase in [("ACP", f_ACP), ("OCP", f_OCP), ("HAp", f_HAp)]:
-        if f_phase < 1e-6:
-            continue
-        r_nm = mean_radius_nm(phase, t_storage_h)
-        r_m  = r_nm * 1e-9
-        c_s  = c_sat_ostwald(phase, r_nm, T_celsius=T_thaw)
+    # Re-dispersion governed by the wall-aggregate size (amorphous CaP).
+    r_nm = ACP_AGGREGATE_NM
+    r_m  = r_nm * 1e-9
+    c_s  = c_sat_ostwald("ACP", r_nm, T_celsius=T_thaw)
+    h_eff   = max(r_m, h_m)                      # diffusion boundary layer
+    c_prec  = 1.0 / (VM["ACP"] * 1000.0)         # mol/L of solid
+    lambda_p = D_eff * (3.0 / r_m) / h_eff * (c_s / c_prec)
+    lambda_p = min(lambda_p, 1.0)                # cap at 1/s
 
-        # Effective 1st-order dissolution rate constant (1/s):
-        # lambda = D_eff * A/V / h_eff × (C_s / C_precipitate)
-        # For a sphere: A/V = 3/r; h_eff = max(r, h_m) (diffusion layer)
-        h_eff   = max(r_m, h_m)
-        # C_precipitate ≈ 1/(VM) mol/m³ → mol/L = 1/(VM*1000)
-        c_prec  = 1.0 / (VM[phase] * 1000.0)   # mol/L, molar concentration of solid
-        lambda_p = D_eff * (3.0 / r_m) / h_eff * (c_s / c_prec)
-
-        # Clamp to physically reasonable max dissolution rate
-        lambda_p = min(lambda_p, 1.0)   # cap at 1/s (dissolves in seconds)
-
-        # Dissolved fraction of this phase at time t: F_p = 1 - exp(-lambda_p * t)
-        F_p = 1.0 - np.exp(-lambda_p * t_sec)
-        recovery += f_phase * F_p
-
-    # Clamp to [0, 1]
-    return np.clip(recovery, 0.0, 1.0)
+    F = 1.0 - np.exp(-lambda_p * t_sec)   # fraction of precipitate redispersed
+    return np.clip(F, 0.0, 1.0)
 
 
 def ca_deficit_at_60min(storage_months: float, protocol: str = "quiescent_22C",
@@ -303,15 +403,10 @@ def ca_deficit_at_60min(storage_months: float, protocol: str = "quiescent_22C",
         protocol=protocol,
         pH_storage=pH_storage,
     )
-    # Seeker measures Ca deficit = fraction of Ca NOT recovered by 60 min.
-    # But total Ca in vial = serum Ca; precipitated fraction is a subset.
-    # The deficit fraction as % of total Ca = f_precipitated × (1 - recovery)
-    # f_precipitated ≈ (1 - alpha_Ca_free) × (total Ca).
-    # At cryo state alpha_Ca = 0.117 → ~88% of Ca goes through the system.
-    # But only the Ca that is actually trapped as slow-dissolving OCP/HAp
-    # contributes to the 60-min deficit.
-    f_precip = 0.88   # fraction of total Ca that precipitates at peak cryo
-    return f_precip * (1.0 - float(rec[0]))
+    # Seeker measures Ca deficit = fraction of total Ca NOT recovered by 60 min.
+    # deficit(% of total Ca) = F_PRECIP × (1 − recovery), where F_PRECIP is the
+    # mass-balance-bounded precipitated fraction (see note at F_PRECIP above).
+    return F_PRECIP * (1.0 - float(rec[0]))
 
 
 # ─────────────────────────────────────────────────────────────────────────────

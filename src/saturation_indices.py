@@ -602,17 +602,10 @@ def physiological_serum_si() -> dict:
         "CO2":    25.0,
         "protein": 60.0,  # 4.0 g/dL = 40 g/L → 40000/66500 mmol/L ≈ 0.60 mM → 60 µM → need g/L form
     }
-    # Fix protein entry: pass as mM where MW=66.5 kDa so g/L → mM = g/L/66.5
-    # 40 g/L / 66.5 g/mol × 1000 = 0.602 mM protein
-    # Our calcium_free_fraction function converts mM back to g/L using MW=66.5
-    # So to input 4 g/dL = 40 g/L albumin: protein_mM = 40/66.5 × 1000 = 601.5 mM
-    # Wait — the REFERENCE_COMPOSITION has protein=60.0 mM (placeholder for 60 g/L protein)
-    # Our conversion: albumin_gL = protein_mM / 1000 * 66.5
-    # 60 mM × 66.5 g/mol / 1000 = 3.99 g/L (but should be 40 g/L)
-    # Need to fix: protein_mM should be 40000/66.5 = 601.5 mM for 40 g/L
-    # But REFERENCE_COMPOSITION uses 60 mM for conceptual placeholder.
-    # Here we set protein_mM correctly for 4 g/dL albumin:
-    phys["protein"] = 40.0 / 66.5 * 1000   # = 601.5 mM → converts back to 40 g/L
+    # Protein is passed in mM; calcium_free_fraction converts back to g/L using
+    # an albumin MW of 66.5 kDa. For physiological 4 g/dL (= 40 g/L) albumin:
+    #   protein_mM = 40 g/L / 66.5 kDa × 1000 = 601.5 mM
+    phys["protein"] = 40.0 / 66.5 * 1000   # 601.5 mM ≡ 40 g/L albumin
     return all_si(phys, pH=7.4, T_celsius=37.0, I=0.16)
 
 

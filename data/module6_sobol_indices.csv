@@ -1,10 +1,10 @@
 parameter,label,S1,S1_conf,ST,ST_conf
-log10_nuc_delay_days,Nucleation delay (days),0.4762,0.0693,0.7129,0.0649
-log10_glass_density,Glass surface site density,0.2008,0.0653,0.4553,0.0603
-storage_T_C,Storage temperature (°C),0.0794,0.0296,0.1023,0.011
-local_k_factor,Local cryo-factor k,0.0071,0.0051,0.0037,0.0005
-fill_volume_mL,Fill volume (mL),0.0031,0.0047,0.0035,0.0013
-albumin_g_dL,Serum albumin (g/dL),0.0002,0.0039,0.0022,0.0003
-cryo_purity,Cryoprotectant purity,0.0,0.0006,0.0001,0.0
-log10_freezing_rate,Freezing rate (°C/min),0.0001,0.0008,0.0001,0.0
+log10_nuc_delay_days,Nucleation delay (days),0.3255,0.0792,0.7824,0.0946
+log10_glass_density,Glass surface site density,0.195,0.0721,0.6197,0.0827
+storage_T_C,Storage temperature (°C),0.014,0.0271,0.1592,0.0412
+fill_volume_mL,Fill volume (mL),-0.0022,0.0142,0.0485,0.0242
+local_k_factor,Local cryo-factor k,0.0,0.0,0.0,0.0
 log10_particle_nm,Initial ACP particle size,0.0,0.0,0.0,0.0
+albumin_g_dL,Serum albumin (g/dL),0.0,0.0,0.0,0.0
+cryo_purity,Cryoprotectant purity,0.0,0.0,0.0,0.0
+log10_freezing_rate,Freezing rate (°C/min),0.0,0.0,0.0,0.0

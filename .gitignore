@@ -57,3 +57,6 @@ data/*.json
 phreeqc/*.out
 phreeqc/*.log
 phreeqc/*.sel
+
+# Internal working docs (must NOT be public)
+*.docx

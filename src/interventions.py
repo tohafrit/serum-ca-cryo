@@ -27,7 +27,8 @@ from pathlib import Path
 from src.ripening_kinetics import (
     rate_constants as _rate_constants,
     R0_NM, K_LSW, VM, GAMMA, C_SAT_BULK,
-    D_CA_22C, D_CA_4C, H_QUIESCENT, H_VORTEX, R_GAS,
+    D_CA_22C, D_CA_4C, H_QUIESCENT, H_VORTEX, R_GAS, F_PRECIP, ACP_AGGREGATE_NM,
+    nucleation_temp_factor,
 )
 from src.vial_simulation import (
     N_BATCHES, N_PER_BATCH, GLASS_REF, FILL_REF,
@@ -45,47 +46,44 @@ STORAGE_MONTHS = [6, 12]
 
 # ── Scenario definitions ──────────────────────────────────────────────────────
 #
+# PRIMARY BASELINE is the SEALED vial (pH 7.81, no CO₂ outgassing) — the most
+# defensible physical state for a closed QC vial. `loose_seal` (pH 8.0) is kept
+# as an explicit RISK scenario: if the closure leaks and CO₂ escapes, pH rises
+# and the problem gets worse — which is itself the rationale for degassing /
+# tight sealing. (Earlier versions used pH 8.0 as the baseline in this module
+# while Module 6 used 7.81; that mismatch produced the 42% vs 58% discrepancy.
+# Both are now reported as named, distinct states.)
+#
 # ph_storage:     pH in unfrozen cryo pool at −20°C
-#   baseline 8.0  = 30% CO₂ outgassing (typical unsealed/loosely sealed vial)
-#   +degas_50 7.9 = 50% residual CO₂ → less outgassing headroom
-#   +degas_10 7.81= 10% residual CO₂ → ~0% outgassing (pKa₁ shift only)
+#   baseline   7.81 = sealed vial (pKa shift + ionic strength only)
+#   loose_seal 8.0  = CO₂ outgassing through a leaking closure (risk state)
 #
 # k_sigma:        σ of local_k_factor Gaussian
 #   baseline 0.15 = ±15% spatial heterogeneity (uncontrolled freezer)
-#   CRF_1C   0.08 = ±8% (1°C/min controlled rate, tighter ice morphology)
-#   CRF_2C   0.05 = ±5% (2°C/min, smallest practical for amber glass)
+#   CRF_2C   0.05 = ±5% (2°C/min controlled-rate freezing)
 #
 # nuc_multiplier: scale factor on NUCLEATION_MEDIAN_DAYS
-#   baseline  1.0 = nominal induction time
-#   CRF adds: faster freeze → less time in intermediate-SI regime → longer delay
-#   CRF_1C    1.8 (Pikal 2004: controlled freeze reduces nucleation frequency)
-#   CRF_2C    2.5
+#   baseline 1.0; CRF 2.5 (faster freeze → longer nucleation delay; Pikal 2004)
 #
 # thaw_h:         Noyes-Whitney boundary layer thickness at thaw (m)
-#   quiescent  10e-6 m  (baseline)
-#   vortex_30s  2e-6 m  (literature: 1–5 µm in agitated dissolution)
-#   vortex_60s  1.5e-6 m (more aggressive mixing, diminishing returns)
-#   combined_plus 1.0e-6 m (double-pulse vortex: 30 s at 5 min + 60 s at 25 min)
+#   quiescent  10e-6 m   (baseline, no mixing)
+#   vortex_30s  2e-6 m   (5× mass transfer; literature 1–5 µm agitated)
+#   vortex_60s  1.5e-6 m (≈7× mass transfer; diminishing returns)
+#   combined_plus 1.0e-6 m (double-pulse vortex → 10× mass transfer)
 #
-# thaw_min:       Thaw measurement window (minutes; default 60)
-#   60    = standard 60-min room-temperature thaw
-#   90    = combined_plus: 60 min RT + 30-min cold soak before measurement
-#   2880  = Seeker's workaround: 48-h cold equilibration at 2-8°C
-#
-# d_factor:       Diffusivity multiplier at thaw temperature (default 1.0 = 22°C)
-#   1.0   = room temperature (22°C), D_CA_22C
-#   ~0.60 = cold equilibration (4°C), D_CA_4C / D_CA_22C (Stokes-Einstein)
+# thaw_min:       Measurement window (min): 60 standard; 90 combined_plus
+#                 (60 RT + 30 cold soak); 2880 = extended-mixing reference (48 h).
+# d_factor:       Diffusivity multiplier (1.0 = 22°C; ≈0.60 = 4°C, Stokes-Einstein)
 
 _D_FACTOR_4C = D_CA_4C / D_CA_22C   # ≈ 0.60 at 4°C vs 22°C
 
 SCENARIOS: dict[str, dict] = {
-    "baseline":    {"ph": 8.0,  "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": H_QUIESCENT},
-    "+degas_50":   {"ph": 7.90, "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": H_QUIESCENT},
-    "+degas_10":   {"ph": 7.81, "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": H_QUIESCENT},
-    "+crf_1C":     {"ph": 8.0,  "k_sig": 0.08, "nuc_mult": 1.8, "thaw_h": H_QUIESCENT},
-    "+crf_2C":     {"ph": 8.0,  "k_sig": 0.05, "nuc_mult": 2.5, "thaw_h": H_QUIESCENT},
-    "+vortex_30s": {"ph": 8.0,  "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": H_VORTEX},
-    "+vortex_60s": {"ph": 8.0,  "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": 1.5e-6},
+    "baseline":    {"ph": 7.81, "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": H_QUIESCENT},
+    # Risk state (not an intervention): leaking closure → CO₂ loss → higher pH.
+    "loose_seal":  {"ph": 8.0,  "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": H_QUIESCENT},
+    "+vortex_30s": {"ph": 7.81, "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": H_VORTEX},
+    "+vortex_60s": {"ph": 7.81, "k_sig": 0.15, "nuc_mult": 1.0, "thaw_h": 1.5e-6},
+    "+crf_2C":     {"ph": 7.81, "k_sig": 0.05, "nuc_mult": 2.5, "thaw_h": H_QUIESCENT},
     "+combined":   {"ph": 7.81, "k_sig": 0.05, "nuc_mult": 2.5, "thaw_h": H_VORTEX},
     # Double-pulse vortex: 30 s at 5 min + 60 s at 25 min → h=1 µm; plus 30-min
     # cold soak at 2-8°C before measurement (total measurement window 90 min).
@@ -93,23 +91,37 @@ SCENARIOS: dict[str, dict] = {
         "ph": 7.81, "k_sig": 0.05, "nuc_mult": 2.5,
         "thaw_h": 1.0e-6, "thaw_min": 90.0,
     },
-    # Seeker's existing workaround: 48-h cold equilibration at 2-8°C.
-    # No vortex; quiescent boundary layer; diffusivity scaled to 4°C.
-    # Reference scenario: "if you wait long enough, it all goes away."
-    "+seeker_workaround": {
-        "ph": 8.0, "k_sig": 0.15, "nuc_mult": 1.0,
+    # Extended-mixing / cold-equilibration reference: long quiescent soak at
+    # 2-8°C. Confirms that, given enough time, the deficit fully reverses —
+    # consistent with the Seeker's report that mixing/standing resolves it.
+    "+extended_mixing": {
+        "ph": 7.81, "k_sig": 0.15, "nuc_mult": 1.0,
         "thaw_h": H_QUIESCENT, "thaw_min": 2880.0, "d_factor": _D_FACTOR_4C,
     },
+    # PREVENTION (root cause): deep-frozen / vitrified storage at ≤ −80°C. Below
+    # the freeze-concentrate glass transition the pool is immobile, nucleation is
+    # arrested, and the precipitate never forms — so even a standard quiescent
+    # thaw reads correct. No mixing needed; the fix is upstream, at storage.
+    "+deep_freeze": {
+        "ph": 7.81, "k_sig": 0.15, "nuc_mult": 1.0,
+        "thaw_h": H_QUIESCENT, "storage_T_mean": -80.0,
+    },
 }
+
+# Scenarios that are genuine interventions (exclude baseline + the risk state).
+INTERVENTION_NAMES = [n for n in SCENARIOS if n not in ("baseline", "loose_seal")]
 
 
 # ── Per-vial deficit calculator (scenario-aware) ──────────────────────────────
 
-def _f_precip_scenario(albumin_g_dL: float, k_eff: float, ph: float) -> float:
-    """Precipitated fraction at cryo state for given albumin, k, pH."""
-    alb_pool = albumin_g_dL * k_eff
-    alpha    = 1.0 / (1.0 + 0.25 * 10.0 ** (0.20 * (ph - 7.4)) * alb_pool)
-    return min(1.0 - alpha, 0.98)
+def _f_precip_scenario(albumin_g_dL: float = 0.0, k_eff: float = 0.0,
+                       ph: float = 7.81) -> float:
+    """Precipitated fraction: mass-balance constant (see F_PRECIP note).
+
+    Arguments retained for compatibility but unused — the precipitated fraction
+    is not an albumin-binding quantity.
+    """
+    return F_PRECIP
 
 
 def compute_vial_deficit_scenario(
@@ -142,42 +154,45 @@ def compute_vial_deficit_scenario(
     glass_factor         = (glass_density / GLASS_REF) * surface_volume_ratio
     effective_delay_days = nucleation_delay_days / max(glass_factor, 0.05)
 
+    # Supersaturation control of nucleation: a higher pool pH means more
+    # supersaturation and a shorter induction time (classical nucleation theory,
+    # monotonic heuristic). This is how degassing/tight sealing (which keep pH
+    # low) and CO₂ outgassing (which raises pH) act — on the AFFECTED FRACTION
+    # via nucleation, not on the per-vial deficit magnitude.
+    ph_super_factor       = 10.0 ** (2.0 * (ph_storage - 7.81))
+    effective_delay_days /= ph_super_factor
+
+    # PREVENTION lever: colder storage → much more viscous pool → longer
+    # induction. Below Tg' (~−50°C) the pool vitrifies and nucleation is
+    # arrested → deep-frozen storage prevents the precipitate from forming.
+    effective_delay_days *= nucleation_temp_factor(storage_T_C)
+
     t_storage_days = storage_months * 30.4375
     t_eff_days     = max(0.0, t_storage_days - effective_delay_days)
     if t_eff_days < 1e-3:
         return 0.0
 
-    # Rate constants (Arrhenius + pH-dependent)
+    # Rate constants (kept for reference; ripening to HAp is suppressed at the
+    # corrected pool viscosity, so the precipitate stays essentially all ACP).
     kk   = _rate_constants(storage_T_C, ph_storage)
     x_ACP, x_OCP, x_HAp = _phase_fractions_analytical(
         t_eff_days, kk["k_ACP_OCP"], kk["k_ACP_HAP"], kk["k_OCP_HAP"]
     )
 
-    # Precipitated fraction (albumin at cryo state)
-    fp = _f_precip_scenario(albumin_g_dL, k_eff, ph_storage)
+    # Precipitated fraction (mass-balance constant)
+    fp = _f_precip_scenario()
 
-    # Dissolution (Noyes-Whitney with scenario thaw_h, thaw_min, d_factor)
-    t_storage_h = t_storage_days * 24.0
-    D_thaw      = D_CA_22C * d_factor
-    recovery    = 0.0
-
-    for phase, frac, r0_override in [
-        ("ACP", x_ACP, particle_size_nm),
-        ("OCP", x_OCP, None),
-        ("HAp", x_HAp, None),
-    ]:
-        if frac < 1e-6:
-            continue
-        r0   = r0_override if r0_override is not None else R0_NM[phase]
-        r_nm = (r0**3 + K_LSW[phase] * t_storage_h) ** (1.0/3.0)
-        r_m  = r_nm * 1e-9
-        c_s  = C_SAT_BULK[phase] * np.exp(
-            2.0 * GAMMA[phase] * VM[phase] / (r_m * R_GAS * 295.15)
-        )
-        c_prec   = 1.0 / (VM[phase] * 1000.0)
-        h_eff    = max(r_m, thaw_h)
-        lambda_p = min(D_thaw * (3.0 / r_m) / h_eff * (c_s / c_prec), 1.0)
-        recovery += frac * (1.0 - np.exp(-lambda_p * thaw_min * 60.0))
+    # Re-dispersion of the wall-bound amorphous precipitate. The thaw protocol
+    # sets the diffusion boundary layer thaw_h (mixing → thin → fast), the window
+    # thaw_min, and the diffusivity (cold soak). Deficit = precipitated fraction
+    # × fraction NOT redispersed.
+    D_thaw = D_CA_22C * d_factor
+    r_m    = ACP_AGGREGATE_NM * 1e-9
+    c_s    = C_SAT_BULK["ACP"] * np.exp(2.0*GAMMA["ACP"]*VM["ACP"]/(r_m*R_GAS*295.15))
+    c_prec = 1.0 / (VM["ACP"] * 1000.0)
+    h_eff  = max(r_m, thaw_h)
+    lam    = min(D_thaw * (3.0 / r_m) / h_eff * (c_s / c_prec), 1.0)
+    recovery = 1.0 - np.exp(-lam * thaw_min * 60.0)
 
     return fp * (1.0 - np.clip(recovery, 0.0, 1.0))
 
@@ -197,7 +212,8 @@ def run_scenario(scenario_name: str, seed: int = 42) -> np.ndarray:
     albumin       = rng.normal(5.5,  0.5,  N_BATCHES).clip(3.5,  7.5)
     cryo_purity   = rng.normal(1.0,  0.02, N_BATCHES).clip(0.94, 1.06)
     freezing_rate = np.exp(rng.normal(np.log(1.0), 0.3, N_BATCHES)).clip(0.3, 5.0)
-    storage_T     = rng.normal(-20.0, 1.5, N_BATCHES).clip(-24.0, -16.0)
+    T_mean        = sc.get("storage_T_mean", -20.0)
+    storage_T     = rng.normal(T_mean, 1.5, N_BATCHES).clip(T_mean - 4.0, T_mean + 4.0)
     nuc_batch_scale = np.exp(
         rng.normal(0.0, NUCLEATION_SIGMA_LN_BATCH, N_BATCHES)
     ).clip(0.05, 20.0)
@@ -262,7 +278,7 @@ def scenario_stats(all_results: dict[str, np.ndarray]) -> list[dict]:
             suffix = f"_{sm}mo"
             row[f"mean_deficit{suffix}_pct"]   = round(d.mean() * 100, 2)
             row[f"p95_deficit{suffix}_pct"]    = round(np.percentile(d, 95) * 100, 2)
-            row[f"frac_above_4pct{suffix}"]    = round((d > THRESHOLD).mean(), 4)
+            row[f"frac_with_deficit{suffix}"]  = round((d > THRESHOLD).mean(), 4)
         rows.append(row)
     return rows
 
@@ -423,13 +439,12 @@ def main_interventions():
     rows = scenario_stats(all_results)
 
     # Print summary table
-    print(f"{'Scenario':<18}  {'6mo frac>4%':>12}  {'12mo frac>4%':>13}  "
-          f"{'12mo mean%':>10}  {'12mo p95%':>9}")
+    print(f"{'Scenario':<18}  {'6mo frac w/def':>14}  {'12mo frac w/def':>15}  "
+          f"{'12mo mean%':>10}")
     for row in rows:
-        print(f"  {row['scenario']:<16}  {row['frac_above_4pct_6mo']:>12.3f}  "
-              f"{row['frac_above_4pct_12mo']:>13.3f}  "
-              f"{row['mean_deficit_12mo_pct']:>10.1f}  "
-              f"{row['p95_deficit_12mo_pct']:>9.1f}")
+        print(f"  {row['scenario']:<16}  {row['frac_with_deficit_6mo']:>14.3f}  "
+              f"{row['frac_with_deficit_12mo']:>15.3f}  "
+              f"{row['mean_deficit_12mo_pct']:>10.1f}")
 
     save_outcomes_csv(rows, DATA_DIR / "module7_intervention_outcomes.csv")
     save_risk_table(DATA_DIR / "module7_risk_assessment.csv")
