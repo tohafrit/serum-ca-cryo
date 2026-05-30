@@ -54,9 +54,9 @@ The absolute deficit is the uncertain part. It scales with the precipitated frac
 
 PART 1 EXPERIMENTS (to prove/disprove the mechanism):
 
-1. DLS or NTA on a freshly-thawed vs a mixed/equilibrated aliquot from the same ≥6-month vial. TRUE → 50–500 nm+ particles in the fresh aliquot, far fewer after mixing, and none in <6-month vials. FALSE → no particles.
-2. Simultaneous ionic Ca (ISE) + total Ca (ICP-MS), before and after mixing. TRUE (precipitation) → both drop and both recover. FALSE (binding) → only ionic Ca drops. This also measures the precipitated fraction directly.
-3. Deposit location: assay a bottom/wall rinse vs the bulk, or image the glass surface. TRUE → calcium concentrated at the wall/bottom of fresh vials.
+1. DLS or NTA on a freshly-thawed vs a mixed/equilibrated aliquot from the same ≥6-month vial. TRUE -> 50–500 nm+ particles in the fresh aliquot, far fewer after mixing, and none in <6-month vials. FALSE -> no particles.
+2. Simultaneous ionic Ca (ISE) + total Ca (ICP-MS), before and after mixing. TRUE (precipitation) -> both drop and both recover. FALSE (binding) -> only ionic Ca drops. This also measures the precipitated fraction directly.
+3. Deposit location: assay a bottom/wall rinse vs the bulk, or image the glass surface. TRUE -> calcium concentrated at the wall/bottom of fresh vials.
 
 A no-particle result falsifies the mechanism. That gives a clean go/no-go before any further spend.
 
@@ -106,7 +106,7 @@ Full model and code: github.com/tohafrit/serum-ca-cryo (`make all` reproduces al
 1. Combes C, Rey C (2010). Amorphous calcium phosphates. Acta Biomater 6:3362.
 2. Carpenter JF, Crowe JH (1988). Mechanism of cryoprotection. Cryobiology 25:244.
 3. Pikal MJ (1990). Freeze-drying of proteins, Part I. Pharm Biotechnol 2:120.
-4. Boskey AL, Posner AS (1973). ACP→hydroxyapatite conversion. J Phys Chem 77:2313.
+4. Boskey AL, Posner AS (1973). ACP->hydroxyapatite conversion. J Phys Chem 77:2313.
 5. Cheng N-S (2008). Viscosity of glycerol-water mixtures. Ind Eng Chem Res 47:3285.
 6. Fennema O (1973). Solid-liquid equilibria (freezing-point depression). M. Dekker.
 7. Parkhurst DL, Appelo CAJ (1999). PHREEQC v2 (WATEQ activity model). USGS 99-4259.

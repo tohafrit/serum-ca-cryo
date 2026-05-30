@@ -45,9 +45,9 @@ The supporting physics is standard and cross-validated. Saturation indices (Davi
 
 PART 1 EXPERIMENTS (to prove/disprove the mechanism):
 
-1. DLS or NTA on a freshly-thawed vs a mixed/equilibrated aliquot from the same ≥6-month vial. TRUE → particles present in the fresh aliquot, far fewer after mixing; none in <6-month vials. FALSE → no particles.
-2. Simultaneous ionic Ca (ISE) + total Ca (ICP-MS) before and after mixing. TRUE (precipitation) → both drop and both recover. FALSE (binding) → only ionic Ca drops. Also measures the precipitated fraction directly.
-3. Deposit location: bottom/wall rinse vs bulk, or surface imaging. TRUE → calcium concentrated at the wall/bottom of fresh, unmixed vials.
+1. DLS or NTA on a freshly-thawed vs a mixed/equilibrated aliquot from the same ≥6-month vial. TRUE -> particles present in the fresh aliquot, far fewer after mixing; none in <6-month vials. FALSE -> no particles.
+2. Simultaneous ionic Ca (ISE) + total Ca (ICP-MS) before and after mixing. TRUE (precipitation) -> both drop and both recover. FALSE (binding) -> only ionic Ca drops. Also measures the precipitated fraction directly.
+3. Deposit location: bottom/wall rinse vs bulk, or surface imaging. TRUE -> calcium concentrated at the wall/bottom of fresh, unmixed vials.
 
 A mixing dose-response (speed × duration vs calcium recovery and analyte stability) then fixes the gentlest validated setting.
 
@@ -92,7 +92,7 @@ Indicative total ≈ 14 weeks of instrument time and materials. No capital equip
 Full model and code: github.com/tohafrit/serum-ca-cryo (`make all` reproduces all figures and 135 unit tests; no proprietary software).
 
 1. Combes C, Rey C (2010). Amorphous calcium phosphates. Acta Biomater 6:3362.
-2. Boskey AL, Posner AS (1973). ACP→hydroxyapatite conversion. J Phys Chem 77:2313.
+2. Boskey AL, Posner AS (1973). ACP->hydroxyapatite conversion. J Phys Chem 77:2313.
 3. Christoffersen J et al. (1989). Dissolution kinetics of calcium hydroxyapatite. J Crystal Growth 94:767.
 4. Cheng N-S (2008). Viscosity of glycerol-water mixtures. Ind Eng Chem Res 47:3285.
 5. Carpenter JF, Crowe JH (1988). Mechanism of cryoprotection. Cryobiology 25:244.
