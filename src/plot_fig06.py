@@ -29,7 +29,7 @@ def plot_fig06(result: dict):
         ax.hist(d, bins=60, color=col, alpha=0.75, edgecolor="none")
         ax.axvline(THRESHOLD * 100, color="crimson", lw=1.8, ls="--")
         ax.text(THRESHOLD * 100 + 0.1, ax.get_ylim()[1] * 0.5,
-                f"detection ~0.5%\n{frac_above:.0%} affected",
+                f"4% threshold\n{frac_above:.0%} ≥ 4%",
                 fontsize=7.5, color="crimson", va="center")
 
         ax.set_title(f"{sm}-month storage", fontsize=9)

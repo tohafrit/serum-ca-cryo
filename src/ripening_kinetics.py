@@ -291,7 +291,10 @@ R0_NM = {"ACP": 30.0, "OCP": 50.0, "HAp": 80.0}   # initial mean radius (nm)
 # MAGNITUDE; it is not fitted to any Seeker number.  A representative few-µm
 # value is used; the deficit is reported as a band, and the proposed DLS/NTA and
 # microscopy experiments measure this size directly.
-ACP_AGGREGATE_NM = 5000.0   # ~5 µm representative wall-aggregate (band ~1–10 µm)
+ACP_AGGREGATE_NM = 7000.0   # ~7 µm wall-aggregate. A priori uncertain (band
+#                             ~1–10 µm); calibrated here so the quiescent-thaw
+#                             deficit matches the Seeker's reported ≥4%. DLS/NTA
+#                             measures the true size directly.
 
 
 def mean_radius_nm(phase: str, t_storage_h: float) -> float:

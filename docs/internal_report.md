@@ -17,10 +17,15 @@ an intervention to prevent it. Constraints (typical for this challenge):
 formulation-neutral, ISO 13485 / REACH / PFAS compliant, process changes only
 (freezing / degassing / thawing).
 
-Note: the public page does not state a numeric threshold, a storage temperature,
-or a 6-month onset. We therefore avoid claiming those specifics and frame the
-mechanism around what is stated. (If the full brief gives them, they can be
-re-added.)
+Seeker = Bio-Rad. The full brief confirms the specifics: −20°C amber-glass vials,
+cryoprotectant added, thaw <60 min, deficit **≥4%** appearing only at **≥6 months**,
+reversible with mixing **or** 24–48 h at 2–8°C, batch/vial-dependent. Crucially,
+Bio-Rad's own preliminary studies say the decrease "may be due to **calcium
+salts**" and list **micro-precipitation/phase separation** as a candidate — i.e.
+our mechanism is their leading hypothesis, made quantitative. Allowed levers:
+initial freezing, degassing, and the precise thaw protocol only; must avoid
+changes to routine lab use; formulation-neutral, ISO 13485 / REACH / PFAS.
+Mitigation target: bring the decrease below 4%.
 
 ---
 
@@ -70,21 +75,23 @@ Four steps; all standard physical chemistry.
 
 ## Section 3 — Numbers and honesty about magnitude
 
-Per-vial deficit at a quiescent 60-min thaw ≈ **1.6%** for representative
-parameters. This is **not** a first-principles prediction: it scales with the
-precipitated fraction F_PRECIP (mass-balance band 0.07–0.97; albumin buffering
-dominant) and the deposit size (~1–50 µm). The honest band is **~0.5–15%**, which
-brackets a plausible observed deficit. The model robustly predicts the
-*direction* and *drivers*; the magnitude is set by quantities the experiments
-measure.
+Deficit in an affected vial at a quiescent 60-min thaw ≈ **5%**, calibrated to the
+Seeker's reported ≥4%. The magnitude is **not** a first-principles prediction: it
+scales with the precipitated fraction F_PRECIP (mass-balance band 0.07–0.97;
+albumin buffering dominant) and the deposit size (~1–50 µm). The honest band is
+**~0.5–15%**. The model robustly predicts the *direction* and *drivers*; the
+magnitude is set by quantities the experiments measure.
 
-Affected-vial fraction (Module 6, 10,000 vials): ~25% early, rising to ~70% and
-then ~90% over extended storage — the nucleation-driven "in some samples".
+Affected-vial fraction (Module 6, 10,000 vials): small early (~7% at 1 mo,
+~30% at 3 mo), ~48% at 6 months, rising to ~78% by 24 months — nucleation-driven
+onset around 6 months; the early tail is the vial-to-vial spread in nucleation
+time (the batch/vial variability).
 
-Interventions (Module 7, fraction with a measurable deficit at the mid-storage
-point): baseline 0.71; loose seal (higher pH) 0.87; **deep-freeze ≤ −80°C → ~0
-(prevents)**; **mixing step → ~0 (neutralizes)**; CRF 0.48 (fewer vials
-nucleate); extended standing → ~0.
+Interventions (Module 7, fraction ≥4% at 6 / 12 months): baseline 0.48 / 0.64;
+loose seal (higher pH) 0.72; **degassing + controlled freezing → 0.22 / 0.41
+(S1, fewer vials nucleate; mean deficit <4%)**; **mixing step → ~0 (S2, deficit
+<4%)**; deep-freeze ≤ −80°C → ~0 (full prevention, cold-chain trade-off);
+extended standing → ~0.
 
 ---
 
@@ -132,11 +139,14 @@ What would improve the model most: (1) ISE+ICP-MS on fresh vs mixed aliquots
 
 ## Section 7 — Submission strategy
 
-Single strong submission, **two-tier solution** (`docs/submission_final.md`):
-**prevent** (deep-frozen / vitrified storage ≤ −80°C → nucleation arrested) or
-**neutralize** (defined mixing step, no new cold chain), with the mechanism as
-rationale, an honest magnitude band, decisive experiments, and a reproducible
-repo. Differentiators vs a crowded field: the deep-freeze prevention falls out
-of our rigorous viscosity analysis (the same physics that *ruled out* crystalline
-ripening), we are explicit about the magnitude band, and every number is
-reproducible with one command.
+**Two submissions** (limit is 3), each Part 1 (mechanism + 3 experiments) /
+Part 2 (intervention + protocol + risk), mapped to the actual form fields:
+- `docs/submission_S1_production.md` — PREVENT at source: degassing + controlled
+  freezing (manufacturer-side; best fit to "avoid changes to routine lab use").
+- `docs/submission_S2_thaw.md` — NEUTRALIZE: precise re-suspension/mixing thaw
+  protocol (Seeker-confirmed; certain <4%); works on existing stock.
+Differentiators vs a crowded field: our mechanism IS Bio-Rad's own "calcium
+salts / micro-precipitation" hypothesis made quantitative; we *ruled out*
+crystalline ripening by a rigorous viscosity argument; we are explicit about the
+magnitude band; and every number is reproducible with one command. (Deep-freeze
+≤ −80°C is offered inside S1 as full prevention, with its cold-chain trade-off.)

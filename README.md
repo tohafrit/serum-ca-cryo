@@ -23,8 +23,8 @@ chain by a defined mixing/re-suspension step at thaw.
 |--------|-------|
 | Cryo-concentration → supersaturation (glycerol 15%, −20°C) | k = 5.58; SI(HAp) ≈ **+7.5** (WATEQ-checked, ΔSI < 0.32) |
 | Crystalline ripening at −20°C in the viscous pool | **suppressed** (~450× slower) → precipitate stays **amorphous** (fig04) |
-| Per-vial deficit at a quiescent thaw | **~1–2%** (representative); honest band **~0.5–15%** (fig06) |
-| Fraction of vials with a measurable deficit | rises **~25% → ~90%** over storage, via stochastic nucleation (fig06/07) |
+| Deficit in an affected vial (quiescent thaw) | **~5%** (calibrated to the Seeker's reported ≥4%); band **~0.5–15%** (fig06) |
+| Fraction of vials with a ≥4% deficit | small early (~7% at 1 mo) → **~48% at 6 mo → ~78% at 24 mo**, via stochastic nucleation onset (fig06/07) |
 | Defined mixing step, or standing | deficit → **~0** — reproduces the Seeker's "reversible with mixing" (fig09) |
 | **Deep-frozen storage (≤ −80°C)** | nucleation arrested → affected fraction → **~0** — root-cause **prevention** (fig09) |
 
@@ -121,21 +121,21 @@ phreeqc/                   WATEQ parameter database (documentation)
 
 ## Intervention scenarios (Module 7)
 
-Metric: **fraction of vials showing a measurable (>0.5%) deficit at 6 months**.
+Metric: **fraction of vials at or above the Seeker's 4% threshold at 6 months**.
 Interventions act either on the *affected fraction* (via nucleation) or on
-*recovery* (via mixing). Per affected vial the deficit is ~1–2% (band 0.5–15%).
+*recovery* (via mixing). Per affected vial the deficit is ~5% (band 0.5–15%).
 
-| Scenario | What it changes | Frac w/ deficit @6mo | Complexity |
-|----------|-----------------|----------------------|------------|
-| baseline (sealed) | — | 0.71 | — |
-| loose_seal (risk) | CO₂ vents, pH→8.0 → more nucleation | 0.87 | — |
-| **+deep_freeze** | **store ≤ −80°C → nucleation arrested (PREVENT)** | **~0.00** | **cold chain** |
-| **+vortex_30s** | **thaw mixing only (NEUTRALIZE)** | **~0.00** | **SOP only** |
+| Scenario | What it changes | Frac ≥4% @6mo | Complexity |
+|----------|-----------------|----------------|------------|
+| baseline (sealed) | — | 0.48 | — |
+| loose_seal (risk) | CO₂ vents, pH→8.0 → more nucleation | 0.72 | — |
+| **+crf_2C** | **degassed + controlled freezing (PREVENT, S1)** | 0.22 | manufacturer |
+| **+vortex_30s** | **thaw mixing only (NEUTRALIZE, S2)** | **~0.00** | **SOP only** |
 | +vortex_60s | longer mixing | ~0.00 | SOP only |
-| +crf_2C | controlled-rate freeze (less nucleation) | 0.48 | capital equipment |
 | +combined | CRF + mixing | ~0.00 | high |
 | +combined_plus | double-pulse mixing + 90 min | ~0.00 | high |
 | +extended_mixing | long standing / cold soak | ~0.00 | none (slow) |
+| +deep_freeze | store ≤ −80°C (full prevent; cold-chain trade-off) | ~0.00 | cold chain |
 
 Two tiers: **deep-freeze prevents** the deposit from forming (root cause);
 **a mixing step neutralizes** it with no new cold chain. Degassing/tight sealing

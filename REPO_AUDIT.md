@@ -25,7 +25,8 @@ Run this checklist before pushing.
 - [x] `README.md` — honest model: amorphous-CaP / under-sampling mechanism,
       two-tier fix (prevent / neutralize), explicit deficit band, bibliography
 - [x] `PROPOSAL_NOTES.md` — consolidated honest findings (bridge document)
-- [x] `docs/submission_final.md` — the single submission text (no placeholders)
+- [x] `docs/submission_S1_production.md` + `docs/submission_S2_thaw.md` — the two
+      submission texts, mapped to the actual form fields (no placeholders)
 - [x] `docs/internal_report.md` — internal report (not for submission)
 - [x] `LICENSE` (MIT), `CITATION.cff`, `pyproject.toml`, `Makefile`
 - [x] Stale draft variants and scaffold cruft removed — one canonical submission
@@ -40,7 +41,7 @@ Run this checklist before pushing.
 ### Content quality (manual review before submitting)
 - [x] README headline matches `data/module6_vial_statistics.csv` and
       `data/module7_intervention_outcomes.csv` (fraction-with-deficit metric)
-- [x] No `[...]` placeholders left in `docs/submission_final.md`
+- [x] No `[...]` placeholders left in the submission texts (S1, S2)
 - [ ] Optional: add one personal detail in Field 4 (text is complete without it)
 - [x] Deficit always presented as a band (~0.5–15%), never a single hard number
 - [x] No third-party tool or authorship attribution anywhere (content + history verified)
@@ -63,5 +64,5 @@ Mechanism: cryo-concentration → supersaturation (SI(HAp) ≈ +7.5, WATEQ-check
 → amorphous CaP on glass (crystalline ripening ruled out by pool viscosity) →
 under-sampled at a quiescent thaw. Two process-only fixes: PREVENT by deep-frozen
 (≤ −80 °C, vitrified) storage that arrests nucleation, or NEUTRALIZE with a
-defined mixing step. Deficit band ~0.5–15% (representative ~1–2%); affected
+defined mixing step. Deficit band ~0.5–15% (representative ~5%); affected
 fraction grows with storage via nucleation.

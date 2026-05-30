@@ -54,7 +54,7 @@ def plot_fig07(result: dict):
     parts["cmedians"].set_linewidth(1.2)
 
     ax_main.axhline(THRESHOLD * 100, color="crimson", lw=1.4, ls="--")
-    ax_main.text(-0.5, THRESHOLD * 100 + 0.1, "detection ~0.5%",
+    ax_main.text(-0.5, THRESHOLD * 100 + 0.1, "4% threshold",
                  fontsize=7.5, color="crimson")
 
     ax_main.set_xlabel("Batch (sorted by median deficit)", fontsize=9)

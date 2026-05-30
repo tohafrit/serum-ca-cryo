@@ -139,6 +139,7 @@ def compute_vial_deficit_scenario(
     thaw_min: float = 60.0,
     d_factor: float = 1.0,
     freezing_rate: float = 1.0,
+    nominal_T_C: float = -20.0,
 ) -> float:
     """Compute per-vial Ca deficit with scenario-specific pH and thaw protocol.
 
@@ -162,10 +163,12 @@ def compute_vial_deficit_scenario(
     ph_super_factor       = 10.0 ** (2.0 * (ph_storage - 7.81))
     effective_delay_days /= ph_super_factor
 
-    # PREVENTION lever: colder storage → much more viscous pool → longer
-    # induction. Below Tg' (~−50°C) the pool vitrifies and nucleation is
-    # arrested → deep-frozen storage prevents the precipitate from forming.
-    effective_delay_days *= nucleation_temp_factor(storage_T_C)
+    # PREVENTION lever: colder NOMINAL storage → much more viscous pool → longer
+    # induction. Below Tg' (~−50°C) the pool vitrifies and nucleation is arrested
+    # → deep-frozen storage prevents the precipitate forming. Applied at the
+    # scenario's nominal temperature (the deliberate process choice), not the
+    # batch-to-batch storage noise (the factor is too steep for ±1-2°C scatter).
+    effective_delay_days *= nucleation_temp_factor(nominal_T_C)
 
     t_storage_days = storage_months * 30.4375
     t_eff_days     = max(0.0, t_storage_days - effective_delay_days)
@@ -253,6 +256,7 @@ def run_scenario(scenario_name: str, seed: int = 42) -> np.ndarray:
                 thaw_min              = sc.get("thaw_min", 60.0),
                 d_factor              = sc.get("d_factor", 1.0),
                 freezing_rate         = freezing_rate[bi],
+                nominal_T_C           = T_mean,
             )
 
     return deficits

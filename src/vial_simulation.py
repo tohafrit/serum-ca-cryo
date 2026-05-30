@@ -86,7 +86,10 @@ FILL_REF  = 7.5   # mL reference fill volume
 #   ≈ 4 h × 10 × exp(7200 × 0.0015) ≈ 4 × 10 × 50 ≈ 2000 h ≈ 83 days
 # This is the median; vial-to-vial spread spans ~3 orders of magnitude
 # (classical nucleation theory: J ∝ exp(-ΔG*/kT); tiny ΔΔG → huge t_ind change)
-NUCLEATION_MEDIAN_DAYS   = 90.0   # 3 months, per Arrhenius estimate above
+NUCLEATION_MEDIAN_DAYS   = 270.0  # ~9 mo median induction → onset ~6 mo,
+#                                  calibrated to the Seeker's "not before 6 months"
+#                                  (also consistent with the corrected high pool
+#                                  viscosity). Refined by the storage-time series.
 NUCLEATION_SIGMA_LN_VIAL  = 1.0   # within-batch lognormal σ (~10× span vial-to-vial)
 NUCLEATION_SIGMA_LN_BATCH = 0.8   # between-batch lognormal σ (formulation, glass lot)
 
@@ -143,6 +146,7 @@ def compute_vial_deficit(
     glass_density: float,
     fill_volume_mL: float,
     freezing_rate: float = 1.0,
+    nominal_T_C: float = BASE_T_C,
 ) -> float:
     """Return Ca deficit fraction at THAW_TIME_MIN for one virtual vial."""
     # Effective k
@@ -154,8 +158,11 @@ def compute_vial_deficit(
     surface_volume_ratio = (fill_volume_mL / FILL_REF)           # proxy for A/V
     glass_factor = (glass_density / GLASS_REF) * surface_volume_ratio
     effective_delay_days = nucleation_delay_days / max(glass_factor, 0.05)
-    # Colder storage → far more viscous pool → longer nucleation induction.
-    effective_delay_days *= nucleation_temp_factor(storage_T_C)
+    # Colder NOMINAL storage → far more viscous pool → longer nucleation
+    # induction (the deliberate process lever; applied at the scenario's nominal
+    # temperature, not the small batch-to-batch storage noise — the factor is too
+    # steep to be driven by ±1-2°C measurement scatter).
+    effective_delay_days *= nucleation_temp_factor(nominal_T_C)
 
     t_storage_days = storage_months * 30.4375
     t_eff_days     = max(0.0, t_storage_days - effective_delay_days)
@@ -291,12 +298,11 @@ def run_monte_carlo(seed: int = 42) -> dict:
 
 # ── Summary statistics + CSV ──────────────────────────────────────────────────
 
-# Detection threshold for "a vial shows a measurable Ca deficit". The post-thaw
-# deficit per affected vial is modest (~1-2% for representative parameters) and
-# fully reversible by mixing; the key vial-to-vial observable is the FRACTION of
-# vials that show any measurable deficit, which is governed by stochastic
-# nucleation (→ "in some samples", batch/vial dependence).
-THRESHOLD = 0.005   # 0.5% — analytically detectable Ca bias
+# Seeker's reported threshold: a "decrease of 4% or more". The mitigation target
+# is to bring the decrease below 4%. The vial-to-vial observable is the FRACTION
+# of vials at or above this threshold, governed by stochastic nucleation
+# (→ "in some samples", batch/vial dependence).
+THRESHOLD = 0.04   # 4% — Seeker's reported deficit threshold / mitigation target
 
 
 def vial_statistics(deficits: np.ndarray) -> list[dict]:

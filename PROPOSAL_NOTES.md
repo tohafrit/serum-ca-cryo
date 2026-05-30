@@ -44,7 +44,8 @@ surface-bound deposit. A crystalline phase would not redissolve so easily.
   buffering is the dominant uncertainty). Representative value 0.90.
 - The wall-deposit effective size (ACP_AGGREGATE_NM, ~1–50 µm) controls the
   per-vial deficit and how fast mixing recovers it. Representative 5 µm.
-- Together these give a per-vial deficit band of ~0.5–15%; representative ~1–2%.
+- Together these give a per-vial deficit band of ~0.5–15%; representative ~5%
+  (calibrated to the Seeker's reported ≥4%).
 - The cryoprotectant identity: a low-viscosity pool would not suppress ripening.
 
 ---
@@ -54,9 +55,11 @@ surface-bound deposit. A crystalline phase would not redissolve so easily.
 - k = 5.58 (glycerol 15%, −20°C); Ca 2.75→15.4 mM; Pi 1.8→10.1 mM.
 - SI(HAp) ≈ +7.5; WATEQ cross-check max ΔSI = 0.32 (cryo), 0.03 (physiological).
 - Ripening suppressed: HAp fraction stays <2% over a year at −20°C.
-- Per-vial deficit at a quiescent 60-min thaw: ~1.6% (representative; band 0.5–15%).
-- Fraction of vials with a measurable (>0.5%) deficit: ~25% (early) rising to
-  ~90% over extended storage (nucleation-driven).
+- Deficit in an affected vial at a quiescent 60-min thaw: ~5% (calibrated to the
+  Seeker's reported ≥4%; band 0.5–15%, set by precipitated fraction × deposit size).
+- Fraction of vials with a ≥4% deficit: small early (~7% at 1 mo, ~30% at 3 mo),
+  ~48% at 6 months, rising to ~78% by 24 months (nucleation-driven onset around
+  6 months; the early tail reflects the vial-to-vial spread in nucleation time).
 - Defined mixing step / extended standing → affected fraction → ~0 (reversible).
 - Loose seal (CO₂ outgassing, higher pH) → more nucleation → higher affected
   fraction (the rationale for tight sealing / degassing).
@@ -103,9 +106,14 @@ A no-particle result in affected vials falsifies the mechanism — a clean go/no
 
 ## 6. Submission positioning
 
-Single strong submission, **fix-first** (see `docs/submission_final.md`): lead
-with the defined mixing step (cheap, immediately actionable, already
-half-observed by the Seeker), then the mechanism as the rationale, then honest
-numbers + experiments + the reproducible repo. Differentiators: rigor (we ruled
-out crystalline ripening rather than asserting it), honesty about the magnitude
-band, and a one-command reproducible model.
+**Two submissions** (challenge allows up to 3), sharing the Part-1 mechanism and
+each leading a distinct, in-scope intervention:
+- `docs/submission_S1_production.md` — PREVENT at source: pre-freeze degassing +
+  controlled-rate freezing (manufacturer-side, no change to routine lab use).
+- `docs/submission_S2_thaw.md` — NEUTRALIZE: a precise re-suspension/mixing thaw
+  protocol (the Seeker already sees mixing works; certain to bring deficit <4%).
+Both are mapped to the actual Bio-Rad/InnoCentive form fields, Part 1 (mechanism
++ 3 experiments) / Part 2 (intervention + protocol + risk). Differentiators:
+our mechanism is Bio-Rad's own "calcium salts / micro-precipitation" hypothesis
+made quantitative; we ruled out crystalline ripening rather than asserting it;
+honest magnitude band; one-command reproducible model.
