@@ -12,34 +12,34 @@ Prevent Ca micro-precipitation at source: pre-freeze degassing + controlled-rate
 Solver (Individual)
 
 ## Field 2 — Solution Level (TRL)
-TRL 3 — analytical/experimental proof of concept. The mechanism is quantified in
-a reproducible model; the confirming experiments are specified but not yet run.
+TRL 3. Analytical and experimental proof of concept: the mechanism is quantified
+in a reproducible model, and the confirming experiments are specified but not yet
+run.
 
 ## Field 3 — Problem & Opportunity (≤3000)
 
-The freshly-thawed vial reads low because a small amount of calcium has left
-solution as a solid, not because calcium has been destroyed. Your own
-preliminary studies point to "calcium salts" and list micro-precipitation/phase
-separation as a candidate — this submission takes that hypothesis, makes it
-quantitative, and shows how to stop the solid forming in the first place.
+The freshly-thawed vial reads low because a small amount of calcium has come out
+of solution as a solid. The calcium is still in the vial. Your own preliminary
+studies already point to "calcium salts" and list micro-precipitation/phase
+separation as a candidate. This submission takes that hypothesis, makes it
+quantitative, and shows how to keep the solid from forming in the first place.
 
-The point of difference is twofold. First, the mechanism is worked through with
-a fully reproducible thermodynamic + kinetic model (public repository, one-command
-rebuild), not asserted. Second, it resolves the puzzle that the others miss —
-why the loss is *reversible*. We show the precipitate must be AMORPHOUS, not
-crystalline: in the cryo-concentrated, glycerol-rich unfrozen pool the viscosity
-is so high (~4000 mPa·s at −20 °C) that ripening to crystalline hydroxyapatite
-would take many years, so an easily re-dispersible amorphous calcium phosphate
-is what remains. Reversibility-with-mixing is the fingerprint of an amorphous
-deposit.
+Two things set the approach apart. The mechanism is worked through in a fully
+reproducible thermodynamic and kinetic model (public repository, one-command
+rebuild), so every number can be checked. And it explains the part most accounts
+skip: why the loss reverses. The precipitate is amorphous calcium phosphate, not
+a crystalline phase. In the cryo-concentrated, glycerol-rich pool the viscosity
+reaches about 4000 mPa·s at −20 °C, so ripening to crystalline hydroxyapatite
+would take years. An amorphous deposit re-disperses easily when the vial is
+mixed. That is why the reading comes back, and it is the clearest sign the
+deposit is amorphous.
 
-The opportunity: because the deposit forms only while the pool is supersaturated
-during freezing and storage, the cheapest place to act is at manufacture, with
-two levers you already control and that change nothing for the end lab —
-pre-freeze degassing and a controlled freezing protocol. This is a
-formulation-neutral, ISO 13485-compatible route to keep the calcium in solution
-so the analyzer reads the labelled value — and, because it acts at manufacture,
-it directly satisfies your "avoid changes to routine laboratory use" requirement.
+The deposit forms only while the pool is supersaturated during freezing and
+storage. The cheapest place to act is therefore at manufacture, with two levers
+you already control: pre-freeze degassing and a controlled freezing protocol.
+Both are formulation-neutral and ISO 13485-compatible, and both keep the calcium
+in solution so the analyzer reads the labelled value. Because they act at
+manufacture, they leave routine laboratory use completely unchanged.
 
 The full model is at github.com/tohafrit/serum-ca-cryo (`make all`, 135 tests).
 
@@ -55,11 +55,12 @@ PART 1 — MECHANISM (Solution Requirement 1)
    is even more supersaturated.
 2. Surface nucleation. Amorphous calcium phosphate nucleates on amber-glass
    surface heterogeneities. Nucleation is stochastic and surface-dependent, so
-   only some vials carry an appreciable deposit at a given time — and the fraction
-   grows with storage. This is the batch-to-batch and vial-to-vial variability,
-   and the ≥6-month onset (the induction time at −20 °C in the viscous pool).
+   only some vials carry an appreciable deposit at a given time, and that
+   fraction grows with storage. This gives the batch-to-batch and vial-to-vial
+   variability, and the ≥6-month onset set by the induction time at −20 °C in the
+   viscous pool.
 3. It stays amorphous. The viscous pool suppresses crystalline ripening (~450×
-   slower; matches Combes & Rey 2010 — ACP is stable for months below 0 °C).
+   slower; matches Combes & Rey 2010, where ACP is stable for months below 0 °C).
 4. Under-sampling at thaw. The amorphous deposit sits on the glass. A quiescent
    freshly-thawed draw under-samples it → the analyzer reads low. Mixing or
    24–48 h equilibration re-disperses it → the value returns (your observation).
@@ -73,7 +74,7 @@ NO change to routine laboratory use)
 A. Pre-freeze degassing. Removing dissolved CO2 before freezing prevents the pH
    rise that otherwise raises supersaturation in the pool. Lower supersaturation
    → fewer and later nuclei → less precipitate. (Your model run shows a loosely
-   sealed, out-gassing vial is markedly worse — so controlling gas/seal helps.)
+   sealed, out-gassing vial is markedly worse, so controlling gas and seal helps.)
 B. Controlled-rate freezing. A defined, faster, uniform freeze reduces local
    cryo-concentration peaks and shortens time in the precipitation-prone window,
    lowering the affected fraction.
@@ -82,7 +83,7 @@ before fill; (ii) tight, validated closure; (iii) controlled-rate freezing on a
 defined ramp (e.g. ~1–2 °C/min) with recorded thermal profile. All steps are at
 the manufacturer; the lab thaws exactly as today. Optional stronger form:
 deep-frozen (≤ −80 °C) storage vitrifies the pool and arrests nucleation
-entirely — most complete prevention, but note the cold-chain trade-off.
+entirely. That is the most complete prevention, with a cold-chain trade-off.
 
 ## Field 5 — Solution Feasibility (≤3000)
 
@@ -99,9 +100,9 @@ the Davies model and were checked against the WATEQ extended Debye-Hückel model
 on one activity model. Everything is reproducible: from a clean clone, `make all`
 runs 135 unit tests and regenerates every figure and table in minutes.
 
-We are explicit about what is uncertain: the absolute deficit scales with the
-precipitated fraction and deposit morphology, which is why we propose measuring
-them rather than asserting a single number.
+The absolute deficit is the uncertain part. It scales with the precipitated
+fraction and the deposit morphology, both of which the experiments below measure.
+We therefore report the magnitude as a band and let the data fix the value.
 
 PART 1 EXPERIMENTS (to prove/disprove the mechanism):
 1. DLS or NTA on a freshly-thawed vs a mixed/equilibrated aliquot from the same
@@ -113,7 +114,8 @@ PART 1 EXPERIMENTS (to prove/disprove the mechanism):
 3. Deposit location: assay a bottom/wall rinse vs the bulk, or image the glass
    surface. TRUE → calcium concentrated at the wall/bottom of fresh vials.
 
-A no-particle result falsifies the mechanism — a clean go/no-go before spend.
+A no-particle result falsifies the mechanism. That gives a clean go/no-go before
+any further spend.
 
 ## Field 6 — Experience (≤3000)
 
@@ -121,9 +123,9 @@ My background is physical chemistry. I hold a specialist degree from the
 Mendeleev University of Chemical Technology, Moscow (Institute of Physical
 Chemistry, 2008), specialising in oxide single-crystal growth: nucleation from
 supersaturated solution, control of growth rate, and phase verification by
-UV-Vis, IR, ICP and AAS. The physics in these vials — nucleation from a
-supersaturated ionic solution and an amorphous-to-crystalline pathway — is the
-physics I worked with in the laboratory, with different ions.
+UV-Vis, IR, ICP and AAS. The physics in these vials is the physics I worked with
+in the laboratory: nucleation from a supersaturated ionic solution and an
+amorphous-to-crystalline pathway, with different ions.
 
 For the last several years I have worked as a senior DevOps engineer at a large
 enterprise (cloud, infrastructure-as-code, CI). That is why this submission ships
@@ -145,7 +147,7 @@ Seeker-required risk factors:
 - pH / ionic strength: degassing slightly lowers the CO2-driven pH rise during
   freezing; both pH and ionic strength revert fully on thaw. No change to the
   thawed product the lab measures.
-- Metal balance: total calcium (and Mg, Na, K…) is conserved in the vial — the
+- Metal balance: total calcium (and Mg, Na, K…) is conserved in the vial. The
   intervention only keeps calcium in solution rather than on the glass; nothing
   is added or removed.
 - Osmolality: degassing removes a dissolved gas, not solutes; the effect on
@@ -156,14 +158,14 @@ scope (initial freezing and degassing). No excipient is added or removed, so the
 formulation stays as registered (ISO 13485); no new chemical substance is
 introduced, so REACH and PFAS status is unchanged.
 
-Efficacy / trade-offs (stated honestly):
-- Degassing + controlled freezing lower the supersaturation and the number of
-  affected vials and reduce the mean deficit below 4% in the model, but a
-  residual fraction of vials may still precipitate; for a guaranteed <4% these
-  pair naturally with a defined thaw step (see our companion submission).
-- The optional deep-freeze (≤ −80 °C) form fully prevents the deposit but imposes
-  a colder cold chain — a real operational trade-off, offered as an option, not
-  a requirement.
+Efficacy and trade-offs:
+- Degassing and controlled freezing lower the supersaturation and the number of
+  affected vials, and they bring the mean deficit below 4% in the model. A
+  residual fraction of vials can still precipitate. To guarantee <4% in every
+  vial, combine them with the defined thaw step in our companion submission.
+- The optional deep-freeze (≤ −80 °C) form prevents the deposit entirely, at the
+  cost of a colder cold chain. It suits products that can carry that logistics
+  burden; otherwise the two levers above are enough for most lots.
 - Magnitude uncertainty: the absolute deficit depends on the precipitated
   fraction/morphology (band ~0.5–15%); Experiment 2 measures it directly, so the
   pilot is self-correcting.
@@ -206,8 +208,8 @@ figures and 135 unit tests; no proprietary software).
 8. Fogh-Andersen N et al. (1995). Calcium binding to serum albumin. Clin Chem 41:1522.
 
 ## Solution Summary (optional field)
-Calcium is not lost — it micro-precipitates as amorphous calcium phosphate on the
-glass and is under-sampled until mixed. Prevent it at source with pre-freeze
+The calcium is still in the vial. It micro-precipitates as amorphous calcium
+phosphate on the glass and is under-sampled until mixed. Prevent it at source with pre-freeze
 degassing and controlled-rate freezing (no change to routine lab use); a defined
 thaw step (companion submission) guarantees <4%. Mechanism, numbers and the three
 confirming experiments are fully reproducible.

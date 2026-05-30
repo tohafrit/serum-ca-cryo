@@ -12,27 +12,27 @@ Neutralise the post-thaw Ca deficit with a defined re-suspension (mixing) thaw p
 Solver (Individual)
 
 ## Field 2 — Solution Level (TRL)
-TRL 4 — the core effect (mixing restores the reading) is already observed by the
+TRL 4. The core effect (mixing restores the reading) is already observed by the
 Seeker; this submission turns it into a defined, validated protocol.
 
 ## Field 3 — Problem & Opportunity (≤3000)
 
-You have already seen the key fact: the deficit reverses with additional mixing
-or 24–48 h equilibration. That tells us the calcium is still in the vial — held
-as a solid that a quiescent draw under-samples — and that a precise thawing
-protocol can recover it every time. The opportunity is to convert your
-incidental observation into a specified, validated re-suspension step that brings
-the recovery below the 4% threshold reliably, with no new equipment and within
-the permitted "precise protocol of sample thawing".
+You have already seen the key fact: the deficit reverses with additional mixing,
+or with 24–48 h of equilibration. So the calcium is still in the vial. It is held
+as a solid that a quiescent draw under-samples, and a precise thawing protocol
+can recover it every time. The opportunity is to turn that incidental observation
+into a specified, validated re-suspension step that brings recovery below the 4%
+threshold reliably, with no new equipment, using only the permitted thawing
+protocol.
 
-The point of difference is the why, worked out quantitatively (public,
-reproducible model). Your own preliminary studies point to "calcium salts" and
-micro-precipitation; we show the precipitate is AMORPHOUS calcium phosphate
-(crystalline hydroxyapatite cannot grow in the viscous cryo-pool — it would take
-years), which is exactly why gentle mixing re-disperses it so easily. A
-crystalline phase would not reverse. This turns "mixing happens to work" into a
-designed step with a defined endpoint and a known mechanism — and it tells us how
-gentle the mixing can be, which protects shear-sensitive analytes.
+The contribution is the mechanism behind it, worked out quantitatively in a
+public, reproducible model. Your preliminary studies already point to "calcium
+salts" and micro-precipitation. We show the precipitate is amorphous calcium
+phosphate: crystalline hydroxyapatite cannot grow in the viscous cryo-pool, where
+it would take years to form. An amorphous solid re-disperses easily, which is
+why gentle mixing recovers the calcium and a crystalline deposit would not.
+Knowing this also tells us how gentle the mixing can be, which protects the
+shear-sensitive analytes.
 
 The full model is at github.com/tohafrit/serum-ca-cryo (`make all`, 135 tests).
 
@@ -54,33 +54,33 @@ PART 1 — MECHANISM (Solution Requirement 1)
    re-disperses it → value returns (your observation).
 
 PART 2 — INTERVENTION (Solution Requirement 2): a defined re-suspension thaw
-protocol (formulation-neutral; the only change is to the permitted thaw step).
-A distinct advantage over prevention: it works on ALREADY-MANUFACTURED stock, so
-it fixes vials in the field today, not just future lots.
+protocol. It is formulation-neutral and the only change is to the permitted thaw
+step. It also has one advantage prevention lacks: it works on already-manufactured
+stock, so it fixes vials in the field today as well as future lots.
 Protocol: thaw at ambient ≤60 min as today, then apply a defined, gentle
-re-suspension before sampling — e.g. a fixed number of slow inversions or a
-brief low-speed vortex, then a short hold — chosen as the *gentlest* action that
-restores calcium within acceptance. In the model, moving from a quiescent draw
-to a thin mixed boundary layer drops the affected fraction to ~0 and the deficit
-from ≥4% to ~1% — comfortably below the 4% target — reproducing your reported
-reversibility with no parameter fitted to it. Because the deposit is amorphous
-and loosely bound, gentle inversion may be sufficient, avoiding high shear.
-This sits squarely within the permitted "precise protocol of sample thawing" and
-needs no equipment the lab does not already have. It pairs naturally with the
-manufacturing-side prevention in our companion submission.
+re-suspension before sampling (for example a fixed number of slow inversions, or
+a brief low-speed vortex, then a short hold). Choose the gentlest action that
+restores calcium within acceptance. In the model, moving from a quiescent draw to
+a thin mixed boundary layer takes the affected fraction to ~0 and the deficit
+from ≥4% to about 1%, well under the 4% target, and it reproduces your reported
+reversibility with no parameter fitted to it. Since the deposit is amorphous and
+loosely bound, gentle inversion may be enough, which avoids high shear. The step
+uses only the permitted thaw protocol and needs no equipment the lab does not
+already have. It complements the manufacturing-side prevention in our companion
+submission.
 
 ## Field 5 — Solution Feasibility (≤3000)
 
-This is the most certain route precisely because the Seeker has already observed
-that mixing/equilibration reverses the deficit; we are specifying and bounding
-something known to work, not proposing something speculative.
+This is the most certain route, because the Seeker has already observed that
+mixing or equilibration reverses the deficit. We are specifying and bounding
+something that is already known to work.
 
 The supporting physics is standard and cross-validated. Saturation indices
 (Davies) were checked against the WATEQ extended Debye-Hückel model in USGS
 PHREEQC: ΔSI ≤ 0.32 at cryo conditions, 0.03 at physiological strength. Re-
 dispersion is modelled as mass-transfer-limited (Noyes-Whitney): a thinner
-diffusion boundary layer under mixing speeds recovery — the same physics that
-makes 24–48 h quiescent equilibration also work, just faster. Everything is
+diffusion boundary layer under mixing speeds recovery. It is the same physics
+that makes 24–48 h quiescent equilibration work, just faster. Everything is
 reproducible: `make all` runs 135 unit tests and regenerates all figures/tables.
 
 PART 1 EXPERIMENTS (to prove/disprove the mechanism):
@@ -102,15 +102,16 @@ My background is physical chemistry. I hold a specialist degree from the
 Mendeleev University of Chemical Technology, Moscow (Institute of Physical
 Chemistry, 2008), specialising in oxide single-crystal growth: nucleation from
 supersaturated solution, control of growth rate, and characterisation by UV-Vis,
-IR, ICP and AAS. The physics here — nucleation from a supersaturated ionic
-solution, an amorphous solid that re-dissolves — is the physics I worked with in
-the laboratory, with different ions.
+IR, ICP and AAS. The physics here is the physics I worked with in the laboratory:
+nucleation from a supersaturated ionic solution, and an amorphous solid that
+re-dissolves, with different ions.
 
 For the last several years I have worked as a senior DevOps engineer at a large
 enterprise (cloud, infrastructure-as-code, CI). That is why this submission ships
 as a reproducible repository with 135 unit tests and a one-command build, and why
 I think in terms of a validated, staged protocol with a clear acceptance
-criterion and rollback — exactly what an SOP change to a regulated product needs.
+criterion and a rollback, which is exactly what an SOP change to a regulated
+product needs.
 
 I am based in Israel with access to Technion core facilities (DLS, ICP-MS,
 electron microscopy). I am not a clinical IVD formulator; I rely on
@@ -122,7 +123,7 @@ Yes.
 
 ## Field 8 — Solution Risks (≤3000)
 
-Main deployment risk — shear on fragile analytes. Vigorous vortexing can lower
+Main deployment risk: shear on fragile analytes. Vigorous vortexing can lower
 some enzyme activities (e.g. LDH, CK) by a few percent. Mitigation: because the
 deposit is amorphous and loosely bound, use the *gentlest* action that recovers
 calcium (slow inversions may suffice), and validate a full analyte panel (at
@@ -138,14 +139,14 @@ Seeker-required risk factors:
   returns the wall-bound calcium to the sampled volume.
 - Osmolality: unaffected (no solute added or removed).
 
-Compliance: the step is a "precise protocol of sample thawing" — explicitly
-permitted. No excipient or substance is added/removed → ISO 13485 formulation-
-neutral; REACH/PFAS status unchanged.
+Compliance: the step is a "precise protocol of sample thawing", which is
+explicitly permitted. No excipient or substance is added or removed, so it is
+ISO 13485 formulation-neutral and REACH/PFAS status is unchanged.
 
-Trade-offs: a thaw step adds a small action at the bench; we minimise it to the
-gentlest validated move. It is fully effective on already-manufactured stock
-(unlike prevention, which only helps future lots) — so it is the immediate
-remedy, complementary to the manufacturing fix. Magnitude/morphology uncertainty
+Trade-offs: a thaw step adds a small action at the bench, and we minimise it to
+the gentlest validated move. It is fully effective on already-manufactured stock,
+where prevention only helps future lots, so it is the immediate remedy and
+complements the manufacturing fix. The magnitude and morphology uncertainty
 (band ~0.5–15%) is resolved by Experiment 2 and the dose-response.
 
 ## Field 9 — Timeline, capability and costs (≤3000)
@@ -185,8 +186,8 @@ figures and 135 unit tests; no proprietary software).
 8. Fennema O (1973). Solid-liquid equilibria (freezing-point depression). M. Dekker.
 
 ## Solution Summary (optional field)
-Calcium is not lost — it micro-precipitates as amorphous calcium phosphate on the
-glass and is under-sampled until mixed. A defined, gentle re-suspension thaw step
-returns it to solution and brings recovery below 4% reliably — the immediate
-remedy that also works on existing stock. Mechanism, numbers and the three
-confirming experiments are fully reproducible.
+The calcium is still in the vial. It micro-precipitates as amorphous calcium
+phosphate on the glass and is under-sampled until mixed. A defined, gentle
+re-suspension thaw step returns it to solution and brings recovery below 4%
+reliably, and it works on existing stock as well as future lots. Mechanism,
+numbers and the three confirming experiments are fully reproducible.
