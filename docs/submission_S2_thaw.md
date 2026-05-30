@@ -1,4 +1,4 @@
-# SUBMISSION S2 — Neutralise at thaw (precise re-suspension / mixing protocol)
+# SUBMISSION S2 - Neutralise at thaw (precise re-suspension / mixing protocol)
 
 Paste each section into the matching field of the InnoCentive form. Character budget per field: 3000. Title: ≤100.
 
@@ -8,15 +8,15 @@ Paste each section into the matching field of the InnoCentive form. Character bu
 
 Neutralise the post-thaw Ca deficit with a defined re-suspension (mixing) thaw protocol
 
-## Field 1 — Participation Type
+## Field 1 - Participation Type
 
 Solver (Individual)
 
-## Field 2 — Solution Level (TRL)
+## Field 2 - Solution Level (TRL)
 
 TRL 4. The core effect (mixing restores the reading) is already observed by the Seeker; this submission turns it into a defined, validated protocol.
 
-## Field 3 — Problem & Opportunity (≤3000)
+## Field 3 - Problem & Opportunity (≤3000)
 
 You have already seen the key fact: the deficit reverses with additional mixing, or with 24–48 h of equilibration. So the calcium is still in the vial. It is held as a solid that a quiescent draw under-samples, and a precise thawing protocol can recover it every time. The opportunity is to turn that incidental observation into a specified, validated re-suspension step that brings recovery below the 4% threshold reliably, with no new equipment, using only the permitted thawing protocol.
 
@@ -24,20 +24,20 @@ The contribution is the mechanism behind it, worked out quantitatively in a publ
 
 The full model is at github.com/tohafrit/serum-ca-cryo (`make all`, 135 tests).
 
-## Field 4 — Solution Overview (≤3000)
+## Field 4 - Solution Overview (≤3000)
 
-PART 1 — MECHANISM (Solution Requirement 1)
+PART 1 - MECHANISM (Solution Requirement 1)
 
 1. Cryo-concentration. On freezing, solutes concentrate into a shrinking unfrozen pool (~5–6× at −20 °C with glycerol); calcium and phosphate become strongly supersaturated for calcium phosphate (SI(HAp) ≈ +7.5, WATEQ-cross-checked). Higher QC calcium/phosphate levels are even more supersaturated.
 2. Surface nucleation. Amorphous calcium phosphate nucleates on amber-glass heterogeneities. Nucleation is stochastic and surface-dependent, so only some vials are affected and the fraction grows with storage (the batch/vial variability and the ≥6-month onset).
 3. It stays amorphous. The viscous pool suppresses crystalline ripening (~450× slower; Combes & Rey 2010). The deposit remains a loosely-bound amorphous solid.
 4. Under-sampling at thaw. A quiescent freshly-thawed draw under-samples the wall-bound deposit, so the analyzer reads low. Mixing or 24–48 h equilibration re-disperses it and the value returns (your observation).
 
-PART 2 — INTERVENTION (Solution Requirement 2): a defined re-suspension thaw protocol. It is formulation-neutral and the only change is to the permitted thaw step. It also has one advantage prevention lacks: it works on already-manufactured stock, so it fixes vials in the field today as well as future lots.
+PART 2 - INTERVENTION (Solution Requirement 2): a defined re-suspension thaw protocol. It is formulation-neutral and the only change is to the permitted thaw step. It also has one advantage prevention lacks: it works on already-manufactured stock, so it fixes vials in the field today as well as future lots.
 
 Protocol: thaw at ambient ≤60 min as today, then apply a defined, gentle re-suspension before sampling (for example a fixed number of slow inversions, or a brief low-speed vortex, then a short hold). Choose the gentlest action that restores calcium within acceptance. In the model, moving from a quiescent draw to a thin mixed boundary layer takes the affected fraction to ~0 and the deficit from ≥4% to about 1%, well under the 4% target, and it reproduces your reported reversibility with no parameter fitted to it. Since the deposit is amorphous and loosely bound, gentle inversion may be enough, which avoids high shear. The step uses only the permitted thaw protocol and needs no equipment the lab does not already have. It complements the manufacturing-side prevention in our companion submission.
 
-## Field 5 — Solution Feasibility (≤3000)
+## Field 5 - Solution Feasibility (≤3000)
 
 This is the most certain route, because the Seeker has already observed that mixing or equilibration reverses the deficit. We are specifying and bounding something that is already known to work.
 
@@ -51,7 +51,7 @@ PART 1 EXPERIMENTS (to prove/disprove the mechanism):
 
 A mixing dose-response (speed × duration vs calcium recovery and analyte stability) then fixes the gentlest validated setting.
 
-## Field 6 — Experience (≤3000)
+## Field 6 - Experience (≤3000)
 
 My background is physical chemistry. I hold a specialist degree from the Mendeleev University of Chemical Technology, Moscow (Institute of Physical Chemistry, 2008), specialising in oxide single-crystal growth: nucleation from supersaturated solution, control of growth rate, and characterisation by UV-Vis, IR, ICP and AAS. The physics here is the physics I worked with in the laboratory: nucleation from a supersaturated ionic solution, and an amorphous solid that re-dissolves, with different ions.
 
@@ -59,11 +59,11 @@ For the last several years I have worked as a senior DevOps engineer at a large 
 
 I am based in Israel with access to Technion core facilities (DLS, ICP-MS, electron microscopy). I am not a clinical IVD formulator; I rely on reproducibility and first-principles physical chemistry, and on letting you verify every number yourself.
 
-## Field 7 — Partnering
+## Field 7 - Partnering
 
 Yes.
 
-## Field 8 — Solution Risks (≤3000)
+## Field 8 - Solution Risks (≤3000)
 
 Main deployment risk: shear on fragile analytes. Vigorous vortexing can lower some enzyme activities (e.g. LDH, CK) by a few percent. Mitigation: because the deposit is amorphous and loosely bound, use the gentlest action that recovers calcium (slow inversions may suffice), and validate a full analyte panel (at minimum LDH, CK, ALP, ALT, albumin, total protein, plus product-critical analytes) across mixing intensities to set the safe, effective setting. This directly addresses "avoid changes to routine laboratory use" beyond the thaw step, and protects the other 40+ analytes in the product.
 
@@ -77,17 +77,17 @@ Compliance: the step is a "precise protocol of sample thawing", which is explici
 
 Trade-offs: a thaw step adds a small action at the bench, and we minimise it to the gentlest validated move. It is fully effective on already-manufactured stock, where prevention only helps future lots, so it is the immediate remedy and complements the manufacturing fix. The magnitude and morphology uncertainty (band ~0.5–15%) is resolved by Experiment 2 and the dose-response.
 
-## Field 9 — Timeline, capability and costs (≤3000)
+## Field 9 - Timeline, capability and costs (≤3000)
 
-Phase 1 — confirm the mechanism (≈4 weeks). On your vials of different storage ages: DLS/NTA on fresh vs mixed aliquots; simultaneous ISE + ICP-MS; wall-vs-bulk calcium. Deliverable: mechanism confirmed and a measured precipitated fraction. Go/no-go before further spend.
+Phase 1 - confirm the mechanism (≈4 weeks). On your vials of different storage ages: DLS/NTA on fresh vs mixed aliquots; simultaneous ISE + ICP-MS; wall-vs-bulk calcium. Deliverable: mechanism confirmed and a measured precipitated fraction. Go/no-go before further spend.
 
-Phase 2 — validate the thaw protocol (≈6 weeks). Mixing dose-response: speed × duration × storage age vs calcium recovery, with a full analyte-stability panel at each setting, to fix the gentlest action that brings recovery <4% within your acceptance criteria. Confirm robustness across batches and fill volumes.
+Phase 2 - validate the thaw protocol (≈6 weeks). Mixing dose-response: speed × duration × storage age vs calcium recovery, with a full analyte-stability panel at each setting, to fix the gentlest action that brings recovery <4% within your acceptance criteria. Confirm robustness across batches and fill volumes.
 
-Phase 3 — documentation (≈4 weeks). Updated thaw SOP with the defined step and endpoint, ISO 13485 change-control, and a verification study design.
+Phase 3 - documentation (≈4 weeks). Updated thaw SOP with the defined step and endpoint, ISO 13485 change-control, and a verification study design.
 
 Indicative total ≈ 14 weeks of instrument time and materials. No capital equipment (mixing devices are already present in labs). I work as a contractor from Israel, can run Phase 1 at Technion core facilities, and am open to remote work for analysis and on-site visits for the validation. Genuinely interested in seeing this through.
 
-## Field 10 — Online References (≤3000)
+## Field 10 - Online References (≤3000)
 
 Full model and code: github.com/tohafrit/serum-ca-cryo (`make all` reproduces all figures and 135 unit tests; no proprietary software).
 

@@ -1,4 +1,4 @@
-# SUBMISSION S1 — Prevent at source (manufacturing: degassing + controlled freezing)
+# SUBMISSION S1 - Prevent at source (manufacturing: degassing + controlled freezing)
 
 Paste each section into the matching field of the InnoCentive form. Character budget per field: 3000. Title: ≤100.
 
@@ -8,15 +8,15 @@ Paste each section into the matching field of the InnoCentive form. Character bu
 
 Prevent Ca micro-precipitation at source: pre-freeze degassing + controlled-rate freezing
 
-## Field 1 — Participation Type
+## Field 1 - Participation Type
 
 Solver (Individual)
 
-## Field 2 — Solution Level (TRL)
+## Field 2 - Solution Level (TRL)
 
 TRL 3. Analytical and experimental proof of concept: the mechanism is quantified in a reproducible model, and the confirming experiments are specified but not yet run.
 
-## Field 3 — Problem & Opportunity (≤3000)
+## Field 3 - Problem & Opportunity (≤3000)
 
 The freshly-thawed vial reads low because a small amount of calcium has come out of solution as a solid. The calcium is still in the vial. Your own preliminary studies already point to "calcium salts" and list micro-precipitation/phase separation as a candidate. This submission takes that hypothesis, makes it quantitative, and shows how to keep the solid from forming in the first place.
 
@@ -26,9 +26,9 @@ The deposit forms only while the pool is supersaturated during freezing and stor
 
 The full model is at github.com/tohafrit/serum-ca-cryo (`make all`, 135 tests).
 
-## Field 4 — Solution Overview (≤3000)
+## Field 4 - Solution Overview (≤3000)
 
-PART 1 — MECHANISM (Solution Requirement 1)
+PART 1 - MECHANISM (Solution Requirement 1)
 
 1. Cryo-concentration. As the vial freezes, water turns to ice and the solutes concentrate into a shrinking unfrozen pool. At −20 °C with a glycerol cryoprotectant the pool is ~5–6× concentrated; calcium and phosphate rise into the mM-tens range and the solution becomes strongly supersaturated for calcium phosphate (saturation index SI(HAp) ≈ +7.5, cross-checked against the USGS WATEQ activity model). At your higher QC calcium/phosphate levels the product is even more supersaturated.
 2. Surface nucleation. Amorphous calcium phosphate nucleates on amber-glass surface heterogeneities. Nucleation is stochastic and surface-dependent, so only some vials carry an appreciable deposit at a given time, and that fraction grows with storage. This gives the batch-to-batch and vial-to-vial variability, and the ≥6-month onset set by the induction time at −20 °C in the viscous pool.
@@ -37,14 +37,14 @@ PART 1 — MECHANISM (Solution Requirement 1)
 
 The model reproduces ≥4% deficits in affected vials and a fraction that grows with storage; the magnitude depends on how much precipitates, an explicit, bounded parameter the experiments measure.
 
-PART 2 — INTERVENTION (Solution Requirement 2; manufacturing-side, so it makes NO change to routine laboratory use)
+PART 2 - INTERVENTION (Solution Requirement 2; manufacturing-side, so it makes NO change to routine laboratory use)
 
 A. Pre-freeze degassing. Removing dissolved CO2 before freezing prevents the pH rise that otherwise raises supersaturation in the pool. Lower supersaturation means fewer and later nuclei, so less precipitate. (Your model run shows a loosely sealed, out-gassing vial is markedly worse, so controlling gas and seal helps.)
 B. Controlled-rate freezing. A defined, faster, uniform freeze reduces local cryo-concentration peaks and shortens time in the precipitation-prone window, lowering the affected fraction.
 
 Protocol: (i) inline vacuum degassing of the bulk to a defined residual CO2 before fill; (ii) tight, validated closure; (iii) controlled-rate freezing on a defined ramp (e.g. ~1–2 °C/min) with recorded thermal profile. All steps are at the manufacturer; the lab thaws exactly as today. Optional stronger form: deep-frozen (≤ −80 °C) storage vitrifies the pool and arrests nucleation entirely. That is the most complete prevention, with a cold-chain trade-off.
 
-## Field 5 — Solution Feasibility (≤3000)
+## Field 5 - Solution Feasibility (≤3000)
 
 The chemistry is standard and well-supported. Cryo-concentration in frozen biologicals is established (Carpenter & Crowe 1988; Pikal 1990). Calcium phosphate metastability and the stability of the amorphous phase at low temperature are textbook (Combes & Rey 2010). Degassing and controlled-rate freezing are routine, validated unit operations in regulated manufacturing.
 
@@ -60,7 +60,7 @@ PART 1 EXPERIMENTS (to prove/disprove the mechanism):
 
 A no-particle result falsifies the mechanism. That gives a clean go/no-go before any further spend.
 
-## Field 6 — Experience (≤3000)
+## Field 6 - Experience (≤3000)
 
 My background is physical chemistry. I hold a specialist degree from the Mendeleev University of Chemical Technology, Moscow (Institute of Physical Chemistry, 2008), specialising in oxide single-crystal growth: nucleation from supersaturated solution, control of growth rate, and phase verification by UV-Vis, IR, ICP and AAS. The physics in these vials is the physics I worked with in the laboratory: nucleation from a supersaturated ionic solution and an amorphous-to-crystalline pathway, with different ions.
 
@@ -68,11 +68,11 @@ For the last several years I have worked as a senior DevOps engineer at a large 
 
 I am based in Israel with access to Technion core facilities (DLS, ICP-MS, electron microscopy) for the validation proposed here. I am not a clinical IVD formulator; I lean on reproducibility and first-principles physical chemistry, and on letting you verify every number yourself.
 
-## Field 7 — Partnering
+## Field 7 - Partnering
 
 Yes.
 
-## Field 8 — Solution Risks (≤3000)
+## Field 8 - Solution Risks (≤3000)
 
 Seeker-required risk factors:
 
@@ -89,17 +89,17 @@ Efficacy and trade-offs:
 - Magnitude uncertainty: the absolute deficit depends on the precipitated fraction and morphology (band ~0.5–15%); Experiment 2 measures it directly, so the pilot is self-correcting.
 - Cryoprotectant dependence: a much less viscous pool would change the kinetics; confirming your cryoprotectant sharpens the model immediately.
 
-## Field 9 — Timeline, capability and costs (≤3000)
+## Field 9 - Timeline, capability and costs (≤3000)
 
-Phase 1 — confirm the mechanism (≈4 weeks). On your vials of different storage ages: DLS/NTA on fresh vs mixed aliquots; simultaneous ISE + ICP-MS; a wall-vs-bulk calcium check. Deliverable: yes/no on the mechanism and a measured precipitated fraction. Clear go/no-go before further spend.
+Phase 1 - confirm the mechanism (≈4 weeks). On your vials of different storage ages: DLS/NTA on fresh vs mixed aliquots; simultaneous ISE + ICP-MS; a wall-vs-bulk calcium check. Deliverable: yes/no on the mechanism and a measured precipitated fraction. Clear go/no-go before further spend.
 
-Phase 2 — manufacturing pilot (≈6–8 weeks). Degassing pilot (residual CO2 by headspace GC; pH and Ca recovery vs control). Controlled-rate freezing pilot (thermal profile; deficit distribution at ≥6 months vs current process). Optional deep-freeze arm (−20 vs ≤ −80 °C storage) for comparison.
+Phase 2 - manufacturing pilot (≈6–8 weeks). Degassing pilot (residual CO2 by headspace GC; pH and Ca recovery vs control). Controlled-rate freezing pilot (thermal profile; deficit distribution at ≥6 months vs current process). Optional deep-freeze arm (−20 vs ≤ −80 °C storage) for comparison.
 
-Phase 3 — documentation (≈4 weeks). SOP for the degassing and freezing steps, ISO 13485 change-control package, and a stability/verification study design.
+Phase 3 - documentation (≈4 weeks). SOP for the degassing and freezing steps, ISO 13485 change-control package, and a stability/verification study design.
 
 Indicative total ≈ 14–16 weeks of instrument time and materials. Degassing is low capital (inline degasser); controlled-rate freezing may need a unit if not already present. I work as a contractor from Israel, can run Phase 1 at Technion core facilities, and am open to remote work for analysis and on-site visits for the manufacturing pilots. I am genuinely interested in seeing this through.
 
-## Field 10 — Online References (≤3000)
+## Field 10 - Online References (≤3000)
 
 Full model and code: github.com/tohafrit/serum-ca-cryo (`make all` reproduces all figures and 135 unit tests; no proprietary software).
 
